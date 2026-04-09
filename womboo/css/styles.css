@@ -9,6 +9,21 @@
     --text-light-gray: #666666;
     --border-color: #222222;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --eye-white: #ffffff;
+    --eye-pupil: #000000;
+    --eyelid-color: #0a0a0a;
+}
+
+:root[data-theme="light"] {
+    --bg-dark: #ffffff;
+    --bg-darker: #f5f5f5;
+    --text-white: #000000;
+    --text-gray: #666666;
+    --text-light-gray: #999999;
+    --border-color: #e0e0e0;
+    --eye-white: #f0f0f0;
+    --eye-pupil: #1a1a1a;
+    --eyelid-color: #ffffff;
 }
 
 /* ========================================
@@ -188,17 +203,115 @@ main {
 
 /* Estilos de los ojos */
 .eye-white {
-    fill: var(--text-white);
+    fill: var(--eye-white);
+    transition: fill var(--transition);
 }
 
 .eye-pupil {
-    fill: var(--bg-dark);
-    transition: cx 0.05s ease-out, cy 0.05s ease-out;
+    fill: var(--eye-pupil);
+    transition: cx 0.05s ease-out, cy 0.05s ease-out, fill var(--transition);
+}
+
+/* Párpados de los ojos */
+.eyelid-top,
+.eyelid-bottom {
+    fill: none;
+    stroke: var(--eyelid-color);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke var(--transition), stroke-dasharray 0.4s ease-out, stroke-dashoffset 0.4s ease-out;
+    opacity: 0;
+}
+
+/* En light mode, los párpados se cierran (cansados) */
+:root[data-theme="light"] .eyelid-top {
+    opacity: 1;
+    animation: closeEyelidTop 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+:root[data-theme="light"] .eyelid-bottom {
+    opacity: 1;
+    animation: closeEyelidBottom 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ========================================
+   HEADER Y BOTÓN THEME
+   ======================================== */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    margin-left: auto;
+}
+
+.theme-toggle:hover {
+    border-color: var(--text-white);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.theme-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle[data-mode="light"] .theme-icon {
+    transform: rotate(180deg);
 }
 
 /* ========================================
    ANIMACIONES
    ======================================== */
+
+/* Animación de cierre del párpado superior */
+@keyframes closeEyelidTop {
+    0% {
+        d: path('M 7 15 Q 15 8 23 15');
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        d: path('M 7 15 Q 15 15 23 15');
+        opacity: 1;
+    }
+}
+
+/* Animación de cierre del párpado inferior */
+@keyframes closeEyelidBottom {
+    0% {
+        d: path('M 7 15 Q 15 22 23 15');
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        d: path('M 7 15 Q 15 15 23 15');
+        opacity: 1;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

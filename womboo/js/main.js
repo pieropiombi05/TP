@@ -59,12 +59,78 @@ function initializeAnimatedEyes() {
 }
 
 // ========================================
-// EVENT LISTENERS
+// THEME TOGGLE - Light/Dark Mode
 // ========================================
+
+/**
+ * Inicializa el sistema de tema (light/dark mode)
+ * Lee la preferencia guardada en localStorage y la aplica
+ * Los ojos del logo se adaptan al tema
+ */
+function initializeTheme() {
+    // Obtener la preferencia guardada o usar 'dark' por defecto
+    const savedTheme = localStorage.getItem('womboo-theme') || 'dark';
+    
+    // Aplicar el tema al documento
+    setTheme(savedTheme);
+    
+    // Configurar el botón de toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        updateThemeButton(savedTheme);
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+}
+
+/**
+ * Aplica un tema específico al documento
+ * @param {string} theme - 'light' o 'dark'
+ */
+function setTheme(theme) {
+    const htmlElement = document.documentElement;
+    
+    if (theme === 'light') {
+        htmlElement.setAttribute('data-theme', 'light');
+    } else {
+        htmlElement.removeAttribute('data-theme');
+    }
+    
+    // Guardar la preferencia
+    localStorage.setItem('womboo-theme', theme);
+}
+
+/**
+ * Alterna entre light mode y dark mode
+ */
+function toggleTheme() {
+    const htmlElement = document.documentElement;
+    const currentTheme = htmlElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    setTheme(newTheme);
+    updateThemeButton(newTheme);
+}
+
+/**
+ * Actualiza la apariencia del botón según el tema
+ * @param {string} theme - 'light' o 'dark'
+ */
+function updateThemeButton(theme) {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.setAttribute('data-mode', theme);
+        const icon = themeToggle.querySelector('.theme-icon');
+        if (icon) {
+            // 🌙 para dark mode, ☀️ para light mode
+            icon.textContent = theme === 'light' ? '☀️' : '🌙';
+        }
+    }
+}
 
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Womboo cargado correctamente');
+    initializeTheme();
     initializeAnimatedEyes();
     initializeEventListeners();
 });
