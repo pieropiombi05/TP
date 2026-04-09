@@ -75,6 +75,8 @@ body {
 .navbar {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .menu-toggle {
@@ -111,6 +113,12 @@ body {
     display: flex;
     list-style: none;
     gap: 3rem;
+    visibility: visible;
+    opacity: 1;
+}
+
+.nav-menu li {
+    display: block;
 }
 
 .nav-menu a {
@@ -122,6 +130,7 @@ body {
     text-decoration: none;
     transition: var(--transition);
     border-bottom: 2px solid transparent;
+    display: inline-block;
 }
 
 .nav-menu a:hover {
@@ -239,14 +248,20 @@ main {
 .product-image {
     width: 100%;
     aspect-ratio: 1;
-    background-color: var(--border-color);
-    border: 1px solid var(--border-color);
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 2px solid var(--border-color);
     margin-bottom: 1.5rem;
     transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light-gray);
+    font-size: 0.9rem;
 }
 
 .product-card:hover .product-image {
-    background-color: #333333;
+    background: linear-gradient(135deg, #353535 0%, #252525 100%);
+    border-color: var(--text-gray);
 }
 
 .product-name {
@@ -425,6 +440,7 @@ main {
 @media (max-width: 768px) {
     .header-container {
         padding: 1.5rem;
+        flex-wrap: wrap;
     }
 
     .logo {
@@ -432,8 +448,14 @@ main {
         letter-spacing: 0.12em;
     }
 
+    .navbar {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
     .menu-toggle {
         display: flex;
+        margin-left: auto;
     }
 
     .nav-menu {
@@ -449,6 +471,7 @@ main {
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.3s ease-out;
+        width: 100%;
     }
 
     .nav-menu.active {
@@ -457,17 +480,18 @@ main {
 
     .nav-menu li {
         border-bottom: 1px solid var(--border-color);
+        display: block;
     }
 
     .nav-menu a {
         display: block;
         padding: 1.5rem 2rem;
-        border-bottom: none;
+        border-bottom: none !important;
     }
 
     .nav-menu a:hover {
         background-color: rgba(255, 255, 255, 0.05);
-        border-bottom: none;
+        border-bottom: none !important;
     }
 
     .hero {
