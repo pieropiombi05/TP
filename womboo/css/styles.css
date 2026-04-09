@@ -167,6 +167,36 @@ main {
 }
 
 /* ========================================
+   OJOS ANIMADOS
+   ======================================== */
+/* Contenedor para el logo con ojos animados */
+.womboo-logo,
+.womboo-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* SVG con los ojos */
+.animated-eyes {
+    display: inline-block;
+    vertical-align: middle;
+    height: 1em;
+    width: auto;
+    aspect-ratio: 2 / 1;
+}
+
+/* Estilos de los ojos */
+.eye-white {
+    fill: var(--text-white);
+}
+
+.eye-pupil {
+    fill: var(--bg-dark);
+    transition: cx 0.05s ease-out, cy 0.05s ease-out;
+}
+
+/* ========================================
    ANIMACIONES
    ======================================== */
 @keyframes fadeIn {
