@@ -14,17 +14,70 @@
     <header class="header">
         <div class="header-container">
             <div class="logo">WOMBOO</div>
+            <nav class="navbar" aria-label="Navegación principal">
+                <button class="menu-toggle" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#collection">Colección</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
     <main>
-        <section class="hero">
+        <section class="hero" id="inicio">
             <div class="hero-content">
                 <h1 class="hero-title">WOMBOO</h1>
                 <p class="hero-tagline">STREETWEAR SIN COMPROMISO</p>
                 <div class="hero-divider"></div>
                 <p class="hero-description">Ropa que desafía lo ordinario. Cada pieza es una declaración.</p>
             </div>
+        </section>
+
+        <section class="products" id="collection">
+            <h2 class="products-title">Colección</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image"></div>
+                    <h3 class="product-name">Oversized Hoodie</h3>
+                    <p class="product-price">$89.99</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"></div>
+                    <h3 class="product-name">Technical Tee</h3>
+                    <p class="product-price">$49.99</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"></div>
+                    <h3 class="product-name">Cargo Pants</h3>
+                    <p class="product-price">$129.99</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact" id="contact">
+            <h2 class="contact-title">Contacto</h2>
+            <form class="contact-form" aria-label="Formulario de contacto">
+                <div class="form-group">
+                    <label for="name">Nombre</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensaje</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="form-button">Enviar</button>
+                <div class="form-message" id="formMessage"></div>
+            </form>
         </section>
     </main>
 
