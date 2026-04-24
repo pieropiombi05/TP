@@ -1,0 +1,125 @@
+/* ========================================
+   CONTACT SECTION
+   ======================================== */
+.contact {
+  padding: 6rem 2rem;
+  background-color: var(--bg-dark);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.contactTitle {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  text-align: center;
+  margin-bottom: 4rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.contactForm {
+  max-width: 600px;
+  margin: 0 auto;
+  animation: fadeIn 1s ease-out;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.formGroup label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.formGroup input,
+.formGroup textarea {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-white);
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: var(--transition);
+  resize: vertical;
+}
+
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+  color: var(--text-light-gray);
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-gray);
+}
+
+.formButton {
+  width: 100%;
+  padding: 1.2rem;
+  background-color: transparent;
+  border: 1px solid var(--text-white);
+  color: var(--text-white);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.formButton:hover {
+  background-color: var(--text-white);
+  color: var(--bg-dark);
+}
+
+.formMessage {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  color: #4ade80;
+  min-height: 2rem;
+  display: block;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .contact {
+    padding: 4rem 2rem;
+  }
+
+  .contactForm {
+    padding: 0 1rem;
+  }
+}

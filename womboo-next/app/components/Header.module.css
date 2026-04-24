@@ -1,0 +1,165 @@
+/* ========================================
+   HEADER
+   ======================================== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--bg-dark);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  background-color: rgba(10, 10, 10, 0.95);
+}
+
+.headerContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  transition: var(--transition);
+}
+
+.logo:hover {
+  color: var(--text-gray);
+}
+
+/* ========================================
+   NAVIGATION
+   ======================================== */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.menuToggle {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.menuToggle span {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background-color: var(--text-white);
+  transition: var(--transition);
+}
+
+.menuToggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+
+.menuToggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menuToggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+.navMenu {
+  display: flex;
+  list-style: none;
+  gap: 3rem;
+  visibility: visible;
+  opacity: 1;
+}
+
+.navMenu li {
+  display: block;
+}
+
+.navMenu a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  text-decoration: none;
+  transition: var(--transition);
+  border-bottom: 2px solid transparent;
+  display: inline-block;
+}
+
+.navMenu a:hover {
+  color: var(--text-gray);
+  border-bottom-color: var(--text-gray);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .headerContainer {
+    padding: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+    letter-spacing: 0.12em;
+  }
+
+  .navbar {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .menuToggle {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .navMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgba(10, 10, 10, 0.98);
+    flex-direction: column;
+    gap: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--border-color);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    width: 100%;
+  }
+
+  .navMenu.active {
+    max-height: 500px;
+  }
+
+  .navMenu li {
+    border-bottom: 1px solid var(--border-color);
+    display: block;
+  }
+
+  .navMenu a {
+    display: block;
+    padding: 1.5rem 2rem;
+    border-bottom: none !important;
+  }
+
+  .navMenu a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-bottom: none !important;
+  }
+}

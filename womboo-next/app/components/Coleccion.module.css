@@ -1,0 +1,109 @@
+/* ========================================
+   PRODUCTS SECTION
+   ======================================== */
+.products {
+  padding: 6rem 2rem;
+  background-color: var(--bg-dark);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.productsTitle {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  text-align: center;
+  margin-bottom: 4rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.productCard {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 1s ease-out;
+  transition: var(--transition);
+}
+
+.productCard:hover {
+  transform: translateY(-5px);
+}
+
+.productImage {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: 2px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light-gray);
+  font-size: 0.9rem;
+}
+
+.productCard:hover .productImage {
+  background: linear-gradient(135deg, #353535 0%, #252525 100%);
+  border-color: var(--text-gray);
+}
+
+.productName {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-white);
+  margin-bottom: 0.5rem;
+}
+
+.productPrice {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-gray);
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 1024px) {
+  .productsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .products {
+    padding: 4rem 2rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

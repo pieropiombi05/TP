@@ -1,0 +1,42 @@
+/* ========================================
+   FOOTER
+   ======================================== */
+.footer {
+  background-color: var(--bg-darker);
+  border-top: 1px solid var(--border-color);
+  padding: 4rem 2rem;
+}
+
+.footerContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footerText {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-light-gray);
+  line-height: 2;
+}
+
+.footerDividerText {
+  color: var(--text-gray);
+  margin: 1rem 0;
+  font-weight: 700;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .footer {
+    padding: 2rem 1.5rem;
+  }
+
+  .footerText {
+    font-size: 0.75rem;
+  }
+}
