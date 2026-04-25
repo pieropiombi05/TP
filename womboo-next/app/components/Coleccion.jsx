@@ -6,6 +6,7 @@ export default function Coleccion({ products = [] }) {
     { name: 'Oversized Hoodie', price: '$89.99' },
     { name: 'Technical Tee', price: '$49.99' },
     { name: 'Cargo Pants', price: '$129.99' },
+    { name: 'Classic Sneakers', price: '$99.99' },
   ];
 
   const productsToDisplay = products.length > 0 ? products : defaultProducts;
