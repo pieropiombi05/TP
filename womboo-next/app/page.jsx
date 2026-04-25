@@ -5,10 +5,10 @@ import Contacto from './components/Contacto';
 import Footer from './components/Footer';
 
 const products = [
-  { name: 'Oversized Hoodie', price: '$89.99' },
-  { name: 'Technical Tee', price: '$49.99' },
-  { name: 'Cargo Pants', price: '$129.99' },
-  { name: 'Classic Sneakers', price: '$99.99' },
+  { name: 'Oversized Hoodie', price: '$89.99', image: '/images/hoodie.png' },
+  { name: 'Technical Tee', price: '$49.99', image: '/images/shirt.png' },
+  { name: 'Cargo Pants', price: '$129.99', image: '/images/pants.png' },
+  { name: 'Classic Sneakers', price: '$99.99', image: '/images/jacket.png' },
 ];
 
 export default function Home() {
