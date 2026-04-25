@@ -1,4 +1,4 @@
-name: Verificar que index.html existe
+name: Verificar proyecto Next.js
 
 on:
   pull_request:
@@ -6,18 +6,28 @@ on:
       - main
 
 jobs:
-  check-index:
+  check-nextjs:
     runs-on: ubuntu-latest
     steps:
       - name: Descargar código
         uses: actions/checkout@v3
 
-      - name: Verificar que index.html existe
+      - name: Verificar que existe package.json
         run: |
-          if [ -f index.html ]; then
-            echo "✓ index.html encontrado"
+          if [ -f womboo-next/package.json ]; then
+            echo "✓ package.json encontrado"
             exit 0
           else
-            echo "✗ index.html no found"
+            echo "✗ package.json no encontrado"
+            exit 1
+          fi
+
+      - name: Verificar que existe la página principal
+        run: |
+          if [ -f womboo-next/app/page.jsx ]; then
+            echo "✓ page.jsx encontrado"
+            exit 0
+          else
+            echo "✗ page.jsx no encontrado"
             exit 1
           fi
