@@ -1,0 +1,33 @@
+name: Verificar proyecto Next.js
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-nextjs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v3
+
+      - name: Verificar que existe package.json
+        run: |
+          if [ -f womboo-next/package.json ]; then
+            echo "✓ package.json encontrado"
+            exit 0
+          else
+            echo "✗ package.json no encontrado"
+            exit 1
+          fi
+
+      - name: Verificar que existe la página principal
+        run: |
+          if [ -f womboo-next/app/page.jsx ]; then
+            echo "✓ page.jsx encontrado"
+            exit 0
+          else
+            echo "✗ page.jsx no encontrado"
+            exit 1
+          fi
