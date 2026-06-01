@@ -65,6 +65,41 @@
   border-color: var(--text-gray);
 }
 
+/* Estilos para input con error de validación */
+.inputError {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.inputError:focus {
+  border-color: #dc2626 !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Estilos para los mensajes de error debajo de cada campo */
+.errorMessage {
+  color: #ef4444;
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  margin-top: 0.4rem;
+  margin-bottom: -1.6rem;
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Animación para que el mensaje de error aparezca suavemente */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .formButton {
   width: 100%;
   padding: 1.2rem;
@@ -80,9 +115,17 @@
   transition: var(--transition);
 }
 
-.formButton:hover {
+.formButton:hover:not(:disabled) {
   background-color: var(--text-white);
   color: var(--bg-dark);
+}
+
+/* Estilos para el botón cuando está en estado disabled (enviando) */
+.formButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: var(--text-light-gray);
+  color: var(--text-light-gray);
 }
 
 .formMessage {
@@ -92,9 +135,35 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.9rem;
   letter-spacing: 0.05em;
-  color: #4ade80;
   min-height: 2rem;
   display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Estilos para mensaje de éxito */
+.mensajeExito {
+  color: #4ade80;
+  background-color: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 4px;
+}
+
+/* Estilos para mensaje de error */
+.mensajeError {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+}
+
+/* Animación fade in para los mensajes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ========================================
