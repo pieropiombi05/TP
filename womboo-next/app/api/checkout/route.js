@@ -19,6 +19,7 @@ export async function POST(request) {
 
     // Convertimos los productos al formato que espera Mercado Pago.
     const productos = items.map((item) => ({
+      id: String(item.id || item.producto_id || item.nombre),
       title: item.nombre,
       quantity: Number(item.cantidad) || 1,
       unit_price: Number(item.precio) || 0,

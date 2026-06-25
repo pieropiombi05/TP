@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 // Estado inicial del formulario para crear o editar un producto.
@@ -7,7 +8,8 @@ const estadoInicial = {
   nombre: '',
   precio: '',
   imagen: '',
-  categoria: ''
+  categoria: '',
+  stock: ''
 };
 
 export default function AdminPage() {
@@ -26,13 +28,8 @@ export default function AdminPage() {
   // Datos del formulario que se envían a la API.
   const [formulario, setFormulario] = useState(estadoInicial);
 
-  // useEffect para cargar los productos al abrir la página.
-  useEffect(() => {
-    cargarProductos();
-  }, []);
-
   // Obtiene los productos desde la API de administración.
-  const cargarProductos = async () => {
+  async function cargarProductos() {
     try {
       setCargando(true);
       const respuesta = await fetch('/api/admin/productos');
@@ -50,7 +47,16 @@ export default function AdminPage() {
     } finally {
       setCargando(false);
     }
-  };
+  }
+
+  // useEffect para cargar los productos al abrir la página.
+  useEffect(() => {
+    const temporizador = window.setTimeout(() => {
+      void cargarProductos();
+    }, 0);
+
+    return () => window.clearTimeout(temporizador);
+  }, []);
 
   // Actualiza los campos del formulario en cada cambio del input.
   const manejarCambio = (evento) => {
@@ -68,7 +74,8 @@ export default function AdminPage() {
     try {
       const payload = {
         ...formulario,
-        precio: Number(formulario.precio) || 0
+        precio: Number(formulario.precio) || 0,
+        stock: Number(formulario.stock) || 0
       };
 
       const metodo = editandoId ? 'PUT' : 'POST';
@@ -104,7 +111,8 @@ export default function AdminPage() {
       nombre: producto.nombre || '',
       precio: producto.precio || '',
       imagen: producto.imagen || '',
-      categoria: producto.categoria || ''
+      categoria: producto.categoria || '',
+      stock: producto.stock ?? ''
     });
   };
 
@@ -155,6 +163,12 @@ export default function AdminPage() {
           Agrega, edita o elimina productos desde Supabase.
         </p>
 
+        <div style={styles.actionsRow}>
+          <Link href="/admin/ventas" style={styles.linkButton}>
+            Ver ventas
+          </Link>
+        </div>
+
         <form onSubmit={manejarSubmit} style={styles.form}>
           <h2 style={styles.formTitle}>
             {editandoId ? 'Editar producto' : 'Agregar producto'}
@@ -197,6 +211,17 @@ export default function AdminPage() {
             required
           />
 
+          <input
+            name="stock"
+            type="number"
+            min="0"
+            value={formulario.stock}
+            onChange={manejarCambio}
+            placeholder="Stock"
+            style={styles.input}
+            required
+          />
+
           <div style={styles.buttonRow}>
             <button type="submit" style={styles.primaryButton}>
               {editandoId ? 'Actualizar producto' : 'Agregar producto'}
@@ -223,6 +248,7 @@ export default function AdminPage() {
                   <th style={styles.th}>Nombre</th>
                   <th style={styles.th}>Precio</th>
                   <th style={styles.th}>Categoría</th>
+                  <th style={styles.th}>Stock</th>
                   <th style={styles.th}>Imagen</th>
                   <th style={styles.th}>Acciones</th>
                 </tr>
@@ -233,6 +259,7 @@ export default function AdminPage() {
                     <td style={styles.td}>{producto.nombre}</td>
                     <td style={styles.td}>${Number(producto.precio).toFixed(2)}</td>
                     <td style={styles.td}>{producto.categoria}</td>
+                    <td style={styles.td}>{Number(producto.stock || 0)}</td>
                     <td style={styles.td}>
                       {producto.imagen ? (
                         <img src={producto.imagen} alt={producto.nombre} style={styles.image} />
@@ -288,7 +315,19 @@ const styles = {
   },
   subtitle: {
     color: '#b0b0b0',
+    marginBottom: '16px'
+  },
+  actionsRow: {
     marginBottom: '24px'
+  },
+  linkButton: {
+    display: 'inline-block',
+    padding: '10px 14px',
+    borderRadius: '8px',
+    background: '#ffffff',
+    color: '#111111',
+    textDecoration: 'none',
+    fontWeight: 600
   },
   form: {
     display: 'grid',

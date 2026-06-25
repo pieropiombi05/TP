@@ -11,35 +11,30 @@ const STORAGE_KEY = 'womboo-carrito';
 
 export function CarritoProvider({ children }) {
   // items guarda los productos que el usuario agregó al carrito.
-  const [items, setItems] = useState([]);
-
-  // este estado evita que el carrito intente guardar en localStorage
-  // antes de que la información haya sido cargada desde el navegador.
-  const [estaListo, setEstaListo] = useState(false);
-
-  // Al montar el provider, intentamos recuperar el carrito guardado
-  // en localStorage para que se mantenga al recargar la página.
-  useEffect(() => {
+  const [items, setItems] = useState(() => {
     if (typeof window === 'undefined') {
-      return;
+      return [];
     }
 
     try {
       const carritoGuardado = window.localStorage.getItem(STORAGE_KEY);
 
-      if (carritoGuardado) {
-        const carritoParseado = JSON.parse(carritoGuardado);
-
-        if (Array.isArray(carritoParseado)) {
-          setItems(carritoParseado);
-        }
+      if (!carritoGuardado) {
+        return [];
       }
+
+      const carritoParseado = JSON.parse(carritoGuardado);
+
+      return Array.isArray(carritoParseado) ? carritoParseado : [];
     } catch (error) {
       console.error('No se pudo cargar el carrito desde localStorage:', error);
-    } finally {
-      setEstaListo(true);
+      return [];
     }
-  }, []);
+  });
+
+  // este estado evita que el carrito intente guardar en localStorage
+  // antes de que la información haya sido cargada desde el navegador.
+  const [estaListo] = useState(true);
 
   // Cada vez que cambie el carrito, lo guardamos de nuevo en localStorage.
   // Si el carrito quedó vacío, lo eliminamos para no dejar datos residuales.

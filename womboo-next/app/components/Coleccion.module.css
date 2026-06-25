@@ -77,6 +77,13 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--text-gray);
+  margin-bottom: 0.5rem;
+}
+
+.productStock {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-gray);
   margin-bottom: 1rem;
 }
 
@@ -95,6 +102,11 @@
 .addToCartButton:hover {
   border-color: var(--text-gray);
   background-color: rgba(255, 255, 255, 0.08);
+}
+
+.addToCartButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ========================================
