@@ -42,8 +42,14 @@ export function CarritoProvider({ children }) {
   }, []);
 
   // Cada vez que cambie el carrito, lo guardamos de nuevo en localStorage.
+  // Si el carrito quedó vacío, lo eliminamos para no dejar datos residuales.
   useEffect(() => {
     if (!estaListo || typeof window === 'undefined') {
+      return;
+    }
+
+    if (items.length === 0) {
+      window.localStorage.removeItem(STORAGE_KEY);
       return;
     }
 
@@ -98,9 +104,13 @@ export function CarritoProvider({ children }) {
     );
   };
 
-  // Limpia por completo el carrito.
+  // Limpia por completo el carrito y deja el almacenamiento local vacío.
   const vaciarCarrito = () => {
     setItems([]);
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
   };
 
   // Calcula la cantidad total de artículos en el carrito.
