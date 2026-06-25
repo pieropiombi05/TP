@@ -1,11 +1,6 @@
 import MercadoPagoConfig, { Preference } from 'mercadopago';
 
 // Creamos el cliente de Mercado Pago con el Access Token configurado en las variables de entorno.
-console.log(
-  process.env.MP_ACCESS_TOKEN
-    ? 'Token presente: ' + process.env.MP_ACCESS_TOKEN.substring(0, 15)
-    : 'TOKEN NO ENCONTRADO'
-);
 const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
 
 export async function POST(request) {
@@ -31,14 +26,19 @@ export async function POST(request) {
     }));
 
     // Creamos la preferencia de pago con el listado de productos.
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const webhookUrl = `${appUrl}/api/webhook`;
+
+    // Creamos la preferencia de pago con el listado de productos y la URL del webhook.
     const preference = new Preference(client);
     const resultado = await preference.create({
       body: {
         items: productos,
+        notification_url: webhookUrl,
         back_urls: {
-          success: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/success`,
-          failure: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/failure`,
-          pending: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/pending`,
+          success: `${appUrl}/checkout/success`,
+          failure: `${appUrl}/checkout/failure`,
+          pending: `${appUrl}/checkout/pending`,
         },
       },
     });
