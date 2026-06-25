@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useCarrito } from '@/context/CarritoContext';
 import styles from './page.module.css';
 
@@ -14,6 +15,48 @@ export default function CarritoPage() {
     cantidadTotal,
     total,
   } = useCarrito();
+
+  const [estaProcesandoPago, setEstaProcesandoPago] = useState(false);
+
+  // Envia el contenido del carrito a la API de checkout para crear una preferencia en Mercado Pago.
+  const handleCheckout = async () => {
+    if (items.length === 0) {
+      return;
+    }
+
+    setEstaProcesandoPago(true);
+
+    try {
+      const respuesta = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            id: item.id,
+            nombre: item.nombre,
+            precio: item.precio,
+            cantidad: item.cantidad,
+          })),
+        }),
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok || !datos.init_point) {
+        throw new Error(datos.message || 'No se pudo iniciar el pago.');
+      }
+
+      // Redirige al usuario a la página de pago de Mercado Pago.
+      window.location.assign(datos.init_point);
+    } catch (error) {
+      console.error('Error al iniciar el checkout:', error);
+      alert(error.message || 'No se pudo iniciar el pago.');
+    } finally {
+      setEstaProcesandoPago(false);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -94,8 +137,13 @@ export default function CarritoPage() {
               <span>${total.toFixed(2)}</span>
             </div>
 
-            <button type="button" className={styles.primaryButton}>
-              Finalizar compra
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={handleCheckout}
+              disabled={estaProcesandoPago}
+            >
+              {estaProcesandoPago ? 'Redirigiendo...' : 'Finalizar compra'}
             </button>
             <button type="button" className={styles.secondaryButton} onClick={vaciarCarrito}>
               Vaciar carrito
