@@ -77,6 +77,24 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--text-gray);
+  margin-bottom: 1rem;
+}
+
+.addToCartButton {
+  margin-top: auto;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  color: var(--text-white);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.addToCartButton:hover {
+  border-color: var(--text-gray);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 /* ========================================

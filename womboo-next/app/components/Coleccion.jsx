@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useCarrito } from '@/context/CarritoContext';
 import styles from './Coleccion.module.css';
 
 export default function Coleccion() {
@@ -19,6 +20,9 @@ export default function Coleccion() {
   
   // Estado para almacenar todas las categorías disponibles
   const [categorias, setCategorias] = useState([]);
+
+  // Obtenemos la función para agregar productos desde el contexto global.
+  const { agregarProducto } = useCarrito();
 
   // useEffect que se ejecuta una sola vez al montar el componente
   // Se encarga de obtener los productos de la API
@@ -125,6 +129,13 @@ export default function Coleccion() {
                 </div>
                 <h3 className={styles.productName}>{producto.nombre}</h3>
                 <p className={styles.productPrice}>${producto.precio.toFixed(2)}</p>
+                <button
+                  type="button"
+                  className={styles.addToCartButton}
+                  onClick={() => agregarProducto(producto)}
+                >
+                  Agregar al carrito
+                </button>
               </div>
             ))
           ) : (
