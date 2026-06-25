@@ -1,13 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCarrito } from '@/context/CarritoContext';
 import styles from './Header.module.css';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [montado, setMontado] = useState(false);
   const { cantidadTotal } = useCarrito();
+
+  // Esperamos a que el componente se monte en el cliente para mostrar
+  // el contador del carrito, evitando así el mismatch de hidratación.
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setMontado(true);
+    }, 0);
+
+    return () => window.clearTimeout(id);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -24,7 +35,7 @@ export default function Header() {
         <nav className={styles.navbar} aria-label="Navegación principal">
           <Link href="/carrito" className={styles.cartButton} aria-label="Ir al carrito">
             <span aria-hidden="true">🛒</span>
-            <span className={styles.cartCount}>{cantidadTotal}</span>
+            {montado ? <span className={styles.cartCount}>{cantidadTotal}</span> : null}
           </Link>
           <button
             className={`${styles.menuToggle} ${isMenuOpen ? styles.active : ''}`}

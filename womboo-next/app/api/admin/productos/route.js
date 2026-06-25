@@ -49,7 +49,7 @@ export async function POST(request) {
 
     // Lee el cuerpo de la petición enviada desde la página de administración.
     const body = await request.json();
-    const { nombre, precio, imagen, categoria } = body;
+    const { nombre, precio, imagen, categoria, stock } = body;
 
     // Valida que los campos mínimos estén presentes antes de insertar.
     if (!nombre || !categoria) {
@@ -67,7 +67,8 @@ export async function POST(request) {
       nombre,
       precio: Number(precio) || 0,
       imagen: imagen || '',
-      categoria
+      categoria,
+      stock: Number(stock) || 0
     };
 
     // Inserta el nuevo producto y devuelve el registro creado.
@@ -108,7 +109,7 @@ export async function PUT(request) {
 
     // Lee el cuerpo de la petición para obtener el id y los campos a actualizar.
     const body = await request.json();
-    const { id, nombre, precio, imagen, categoria } = body;
+    const { id, nombre, precio, imagen, categoria, stock } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -125,7 +126,8 @@ export async function PUT(request) {
       nombre,
       precio: Number(precio) || 0,
       imagen: imagen || '',
-      categoria
+      categoria,
+      stock: Number(stock) || 0
     };
 
     // Actualiza el producto que coincida con el id y devuelve el registro modificado.

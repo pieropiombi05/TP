@@ -10,6 +10,55 @@ const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN 
 // Instanciamos el cliente de pagos de Mercado Pago para consultar el detalle de un pago.
 const paymentClient = new Payment(client);
 
+// Normaliza los productos que vienen en la notificación para guardarlos en la tabla ordenes.
+function normalizarProductos(paymentDetail) {
+  return (paymentDetail.additional_info?.items || paymentDetail.items || []).map((item) => ({
+    id: item.id || null,
+    title: item.title || 'Producto sin nombre',
+    quantity: Number(item.quantity) || 1,
+    unit_price: Number(item.unit_price) || 0,
+  }));
+}
+
+// Descuenta el stock de cada producto vendido cuando el pago queda aprobado.
+async function descontarStock(supabase, productosVendidos) {
+  for (const productoVendido of productosVendidos) {
+    const idProducto = Number(productoVendido.id);
+    const cantidad = Number(productoVendido.quantity) || 0;
+
+    // Si no hay identificador de producto o cantidad, se salta este item.
+    if (!Number.isFinite(idProducto) || cantidad <= 0) {
+      continue;
+    }
+
+    const { data: productoActual, error: errorConsulta } = await supabase
+      .from('productos')
+      .select('id, stock')
+      .eq('id', idProducto)
+      .maybeSingle();
+
+    if (errorConsulta) {
+      throw errorConsulta;
+    }
+
+    if (!productoActual) {
+      continue;
+    }
+
+    const stockActual = Number(productoActual.stock) || 0;
+    const nuevoStock = Math.max(0, stockActual - cantidad);
+
+    const { error: errorActualizacion } = await supabase
+      .from('productos')
+      .update({ stock: nuevoStock })
+      .eq('id', idProducto);
+
+    if (errorActualizacion) {
+      throw errorActualizacion;
+    }
+  }
+}
+
 export async function POST(request) {
   try {
     // Leemos el cuerpo de la notificación enviada por Mercado Pago.
@@ -30,12 +79,8 @@ export async function POST(request) {
     const paymentDetail = await paymentClient.get({ id: paymentId });
 
     // Normalizamos los productos para guardarlos en Supabase.
-    // Mercado Pago devuelve los items en additional_info.items cuando vienen desde una preferencia.
-    const productos = (paymentDetail.additional_info?.items || []).map((item) => ({
-      title: item.title || 'Producto sin nombre',
-      quantity: Number(item.quantity) || 1,
-      unit_price: Number(item.unit_price) || 0,
-    }));
+    const productos = normalizarProductos(paymentDetail);
+    const esAprobado = paymentDetail.status === 'approved';
 
     // Armamos el payload que vamos a persistir en la tabla ordenes.
     const ordenParaGuardar = {
@@ -49,13 +94,32 @@ export async function POST(request) {
     // Obtenemos el cliente de Supabase y verificamos si la orden ya existe.
     // Esto evita duplicados si Mercado Pago reenvía la misma notificación.
     const supabase = getSupabaseClient();
-    const { data: ordenExistente } = await supabase
+    const { data: ordenExistente, error: errorConsulta } = await supabase
       .from('ordenes')
-      .select('payment_id')
+      .select('*')
       .eq('payment_id', ordenParaGuardar.payment_id)
       .maybeSingle();
 
+    if (errorConsulta) {
+      throw errorConsulta;
+    }
+
     if (ordenExistente) {
+      // Si la orden ya existía y estaba pendiente, la actualizamos al estado final y, si corresponde, descontamos stock.
+      if (ordenExistente.estado !== 'approved' && esAprobado) {
+        await supabase
+          .from('ordenes')
+          .update({
+            estado: paymentDetail.status,
+            total: ordenParaGuardar.total,
+            productos,
+            email_comprador: ordenParaGuardar.email_comprador,
+          })
+          .eq('id', ordenExistente.id);
+
+        await descontarStock(supabase, productos);
+      }
+
       return Response.json(
         { message: 'La orden ya estaba registrada.', accepted: true },
         { status: 200 }
@@ -67,6 +131,11 @@ export async function POST(request) {
 
     if (error) {
       throw error;
+    }
+
+    // Si el pago quedó aprobado, descontamos el stock de cada producto comprado.
+    if (esAprobado) {
+      await descontarStock(supabase, productos);
     }
 
     // Respondemos con 200 para indicar que la notificación fue procesada correctamente.

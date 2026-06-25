@@ -129,12 +129,16 @@ export default function Coleccion() {
                 </div>
                 <h3 className={styles.productName}>{producto.nombre}</h3>
                 <p className={styles.productPrice}>${producto.precio.toFixed(2)}</p>
+                <p className={styles.productStock}>
+                  {Number(producto.stock || 0) > 0 ? `Stock: ${producto.stock}` : 'Agotado'}
+                </p>
                 <button
                   type="button"
                   className={styles.addToCartButton}
                   onClick={() => agregarProducto(producto)}
+                  disabled={Number(producto.stock || 0) <= 0}
                 >
-                  Agregar al carrito
+                  {Number(producto.stock || 0) > 0 ? 'Agregar al carrito' : 'Agotado'}
                 </button>
               </div>
             ))
