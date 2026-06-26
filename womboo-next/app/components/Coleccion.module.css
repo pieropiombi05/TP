@@ -113,7 +113,7 @@
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
   border-radius: 999px;
 }
 
@@ -125,6 +125,15 @@
 .addToCartButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Estado visual cuando el producto fue agregado recientemente. */
+.added {
+  background-color: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
 /* ========================================
