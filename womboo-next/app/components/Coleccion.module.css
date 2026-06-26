@@ -3,8 +3,8 @@
    ======================================== */
 .products {
   padding: 6rem 2rem;
-  background-color: var(--bg-dark);
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--section-divider);
 }
 
 .productsTitle {
@@ -13,10 +13,19 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-white);
+  color: var(--text-primary);
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 0.75rem;
   animation: fadeIn 1s ease-out;
+}
+
+.productsTitle::before {
+  content: '01 / COLECCIÓN';
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
+  color: var(--text-secondary);
 }
 
 .productsGrid {
@@ -32,24 +41,32 @@
   flex-direction: column;
   animation: fadeIn 1s ease-out;
   transition: var(--transition);
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background-color: var(--surface);
+  box-shadow: 0 12px 30px var(--shadow-soft);
 }
 
 .productCard:hover {
   transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 18px 40px var(--shadow-soft);
 }
 
 .productImageContainer {
   width: 100%;
   aspect-ratio: 1;
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   margin-bottom: 1.5rem;
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  border-radius: 14px;
 }
 
 .productCard:hover .productImageContainer {
-  border-color: var(--text-gray);
+  border-color: var(--accent);
 }
 
 .productImage {
@@ -67,7 +84,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-white);
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -76,14 +93,14 @@
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--text-gray);
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
 .productStock {
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
-  color: var(--text-gray);
+  color: var(--text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -92,16 +109,17 @@
   padding: 0.8rem 1rem;
   border: 1px solid var(--border-color);
   background-color: transparent;
-  color: var(--text-white);
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
+  border-radius: 999px;
 }
 
 .addToCartButton:hover {
-  border-color: var(--text-gray);
-  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
 }
 
 .addToCartButton:disabled {
@@ -130,23 +148,24 @@
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.05em;
-  color: var(--text-gray);
+  color: var(--text-secondary);
   background-color: transparent;
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: var(--transition);
   text-transform: capitalize;
+  border-radius: 999px;
 }
 
 .filterButton:hover {
-  color: var(--text-white);
-  border-color: var(--text-white);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .filterButton.active {
-  color: var(--text-white);
-  background-color: var(--text-gray);
-  border-color: var(--text-gray);
+  color: var(--text-primary);
+  background-color: var(--accent-soft);
+  border-color: var(--accent);
 }
 
 /* ========================================
@@ -163,11 +182,11 @@
 .errorMessage p {
   font-family: 'Inter', sans-serif;
   font-size: 1.1rem;
-  color: var(--text-gray);
+  color: var(--text-secondary);
 }
 
 .errorMessage p {
-  color: #ff6b6b;
+  color: var(--error);
 }
 
 .noProducts {
@@ -176,7 +195,7 @@
   padding: 2rem;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: var(--text-gray);
+  color: var(--text-secondary);
 }
 
 /* ========================================

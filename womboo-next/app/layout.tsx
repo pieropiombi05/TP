@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Mono, Inter } from "next/font/google";
 import { CarritoProvider } from "@/context/CarritoContext";
+import { TemaProvider } from "@/context/TemaContext";
 import "./globals.css";
 
 const spaceMono = Space_Mono({
@@ -44,7 +45,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        <CarritoProvider>{children}</CarritoProvider>
+        <TemaProvider>
+          <CarritoProvider>{children}</CarritoProvider>
+        </TemaProvider>
       </body>
     </html>
   );

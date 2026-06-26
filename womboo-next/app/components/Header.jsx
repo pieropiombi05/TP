@@ -3,12 +3,14 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useCarrito } from '@/context/CarritoContext';
+import { useTema } from '@/context/TemaContext';
 import styles from './Header.module.css';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [montado, setMontado] = useState(false);
   const { cantidadTotal } = useCarrito();
+  const { tema, alternarTema, esLight } = useTema();
 
   // Esperamos a que el componente se monte en el cliente para mostrar
   // el contador del carrito, evitando así el mismatch de hidratación.
@@ -33,6 +35,15 @@ export default function Header() {
       <div className={styles.headerContainer}>
         <div className={styles.logo}>WOMBOO</div>
         <nav className={styles.navbar} aria-label="Navegación principal">
+          <button
+            type="button"
+            className={styles.themeToggle}
+            onClick={alternarTema}
+            aria-label={esLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+            title={esLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+          >
+            <span aria-hidden="true">{esLight ? '☀︎' : '☾'}</span>
+          </button>
           <Link href="/carrito" className={styles.cartButton} aria-label="Ir al carrito">
             <span aria-hidden="true">🛒</span>
             {montado ? <span className={styles.cartCount}>{cantidadTotal}</span> : null}

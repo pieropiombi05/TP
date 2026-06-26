@@ -19,9 +19,9 @@ export default function SuccessPage() {
   };
 
   return (
-    <div style={{ maxWidth: '720px', margin: '4rem auto', padding: '2rem', textAlign: 'center' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>¡Pago aprobado!</h1>
-      <p style={{ fontSize: '1rem', lineHeight: 1.6 }}>
+    <div style={{ maxWidth: '720px', margin: '4rem auto', padding: '2rem', textAlign: 'center', background: 'var(--surface)', border: '1px solid var(--border-color)', borderRadius: '20px', boxShadow: '0 18px 40px var(--shadow-soft)' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>¡Pago aprobado!</h1>
+      <p style={{ fontSize: '1rem', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
         Tu compra se completó correctamente. Gracias por elegir Womboo.
       </p>
       <button
@@ -37,18 +37,18 @@ export default function SuccessPage() {
           display: inline-block;
           margin-top: 1.5rem;
           padding: 0.9rem 1.4rem;
-          border: none;
+          border: 1px solid var(--accent);
           border-radius: 999px;
-          background: #111;
-          color: #fff;
+          background: var(--accent);
+          color: var(--bg-primary);
           font-weight: 600;
           cursor: pointer;
-          transition: background-color 0.2s ease, transform 0.2s ease;
+          transition: transform 0.2s ease, background-color 0.2s ease;
         }
 
         .btn-volver:hover {
-          background: #222;
           transform: translateY(-1px);
+          background: var(--accent);
         }
       `}</style>
     </div>
