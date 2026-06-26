@@ -1,6 +1,11 @@
 // API Route para manejar el formulario de contacto
 // Ubicación: app/api/contacto/route.js
-// Este archivo recibe las peticiones POST desde el cliente y procesa los datos del formulario
+// Este archivo recibe las peticiones POST desde el cliente, valida los datos y los guarda en Supabase
+
+import { getSupabaseClient } from '../../../lib/supabase.js';
+
+// Fuerza esta ruta a evaluar la información fresca en cada petición para que los mensajes aparezcan inmediatamente.
+export const dynamic = 'force-dynamic';
 
 /**
  * Función auxiliar para validar el formato de un email
@@ -70,14 +75,27 @@ export async function POST(request) {
       );
     }
 
-    // Si todas las validaciones pasaron, aquí iría la lógica para guardar/enviar el email
-    // Por ahora solo devolvemos un mensaje de éxito
-    console.log('Datos del formulario recibidos:', {
-      nombre,
-      email,
-      mensaje,
-      fechaRecibida: new Date().toISOString(),
-    });
+    // Si todas las validaciones pasaron, creamos el cliente de Supabase y guardamos el mensaje en la tabla mensajes.
+    const supabase = getSupabaseClient();
+
+    const mensajeParaGuardar = {
+      nombre: nombre.trim(),
+      email: email.trim().toLowerCase(),
+      mensaje: mensaje.trim(),
+    };
+
+    // Insertamos el registro en Supabase y devolvemos el mensaje creado para confirmar el guardado.
+    const { data, error } = await supabase
+      .from('mensajes')
+      .insert([mensajeParaGuardar])
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    console.log('Mensaje guardado en Supabase:', data);
 
     // Devolver respuesta de éxito con código 200 (OK)
     return Response.json(
@@ -85,9 +103,9 @@ export async function POST(request) {
         éxito: true,
         mensaje: 'Tu mensaje ha sido recibido correctamente. Nos pondremos en contacto pronto.',
         datos: {
-          nombre,
-          email,
-          fechaRecibida: new Date().toISOString(),
+          nombre: data?.nombre ?? nombre,
+          email: data?.email ?? email,
+          fechaRecibida: data?.created_at ?? new Date().toISOString(),
         },
       },
       { status: 200 }
