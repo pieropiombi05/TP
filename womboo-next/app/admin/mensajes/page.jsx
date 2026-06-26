@@ -1,5 +1,8 @@
 "use client";
 
+// Forzamos render dinámico en tiempo de ejecución para evitar prerender en build
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
