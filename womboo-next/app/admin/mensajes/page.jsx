@@ -10,18 +10,22 @@ import { getSupabaseClient } from '../../../lib/supabase';
 
 export default function MensajesPage() {
   const router = useRouter();
-  const supabase = getSupabaseClient();
-
   // Verificamos sesión activa antes de cargar mensajes.
   useEffect(() => {
     let mounted = true;
+    let subscription;
 
     const comprobar = async () => {
       try {
+        const supabase = getSupabaseClient();
         const { data } = await supabase.auth.getSession();
         if (mounted && !data?.session) {
           router.replace('/admin/login');
         }
+
+        subscription = supabase.auth.onAuthStateChange((event, session) => {
+          if (!session) router.replace('/admin/login');
+        });
       } catch (err) {
         console.error('Error comprobando sesión:', err);
         if (mounted) router.replace('/admin/login');
@@ -30,12 +34,8 @@ export default function MensajesPage() {
 
     void comprobar();
 
-    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) router.replace('/admin/login');
-    });
-
-    return () => subscription?.unsubscribe();
-  }, [router, supabase]);
+    return () => subscription?.unsubscribe?.();
+  }, [router]);
   // Estado para guardar los mensajes recuperados desde Supabase.
   const [mensajes, setMensajes] = useState([]);
 

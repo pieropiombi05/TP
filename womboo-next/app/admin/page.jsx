@@ -19,18 +19,26 @@ const estadoInicial = {
 
 export default function AdminPage() {
   const router = useRouter();
-  const supabase = getSupabaseClient();
-
   // Verificamos la sesión al montar. Si no hay sesión activa redirigimos al login.
   useEffect(() => {
     let mounted = true;
+    let subscription;
 
     const comprobar = async () => {
       try {
+        // Llamamos a getSupabaseClient() solo en el cliente dentro del useEffect.
+        const supabase = getSupabaseClient();
         const { data } = await supabase.auth.getSession();
         if (mounted && !data?.session) {
           router.replace('/admin/login');
         }
+
+        // Nos suscribimos a cambios de estado de auth para manejar signOut desde otra pestaña.
+        subscription = supabase.auth.onAuthStateChange((event, session) => {
+          if (!session) {
+            router.replace('/admin/login');
+          }
+        });
       } catch (err) {
         console.error('Error comprobando sesión:', err);
         if (mounted) router.replace('/admin/login');
@@ -39,18 +47,11 @@ export default function AdminPage() {
 
     void comprobar();
 
-    // Nos suscribimos a cambios de estado de auth para manejar signOut desde otra pestaña.
-    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        router.replace('/admin/login');
-      }
-    });
-
     return () => {
       mounted = false;
-      subscription?.unsubscribe();
+      subscription?.unsubscribe?.();
     };
-  }, [router, supabase]);
+  }, [router]);
   // Lista de productos que se muestran en la tabla.
   const [productos, setProductos] = useState([]);
 
@@ -207,6 +208,7 @@ export default function AdminPage() {
           <button
             onClick={async () => {
               try {
+                const supabase = getSupabaseClient();
                 await supabase.auth.signOut();
                 router.replace('/admin/login');
               } catch (err) {
