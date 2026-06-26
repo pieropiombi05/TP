@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useCarrito } from '@/context/CarritoContext';
 import { useTema } from '@/context/TemaContext';
+import AnimatedO from './AnimatedO';
 import styles from './Header.module.css';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [montado, setMontado] = useState(false);
   const { cantidadTotal } = useCarrito();
-  const { tema, alternarTema, esLight } = useTema();
+  const { alternarTema, esLight } = useTema();
 
   // Esperamos a que el componente se monte en el cliente para mostrar
   // el contador del carrito, evitando así el mismatch de hidratación.
@@ -33,7 +34,11 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.headerContainer}>
-        <div className={styles.logo}>WOMBOO</div>
+        <Link href="/" className={styles.logo} aria-label="Volver al inicio">
+          <span className={styles.logoWord}>WOMB</span>
+          <AnimatedO />
+          <AnimatedO />
+        </Link>
         <nav className={styles.navbar} aria-label="Navegación principal">
           <button
             type="button"
