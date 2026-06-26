@@ -1,7 +1,12 @@
-'use client';
+"use client";
+
+// Forzamos render dinámico en tiempo de ejecución para evitar prerender en build
+export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getSupabaseClient } from '../../lib/supabase';
 
 // Estado inicial del formulario para crear o editar un producto.
 const estadoInicial = {
@@ -13,6 +18,40 @@ const estadoInicial = {
 };
 
 export default function AdminPage() {
+  const router = useRouter();
+  // Verificamos la sesión al montar. Si no hay sesión activa redirigimos al login.
+  useEffect(() => {
+    let mounted = true;
+    let subscription;
+
+    const comprobar = async () => {
+      try {
+        // Llamamos a getSupabaseClient() solo en el cliente dentro del useEffect.
+        const supabase = getSupabaseClient();
+        const { data } = await supabase.auth.getSession();
+        if (mounted && !data?.session) {
+          router.replace('/admin/login');
+        }
+
+        // Nos suscribimos a cambios de estado de auth para manejar signOut desde otra pestaña.
+        subscription = supabase.auth.onAuthStateChange((event, session) => {
+          if (!session) {
+            router.replace('/admin/login');
+          }
+        });
+      } catch (err) {
+        console.error('Error comprobando sesión:', err);
+        if (mounted) router.replace('/admin/login');
+      }
+    };
+
+    void comprobar();
+
+    return () => {
+      mounted = false;
+      subscription?.unsubscribe?.();
+    };
+  }, [router]);
   // Lista de productos que se muestran en la tabla.
   const [productos, setProductos] = useState([]);
 
@@ -165,6 +204,21 @@ export default function AdminPage() {
         </p>
 
         <div style={styles.actionsRow}>
+          {/* Botón para cerrar sesión: llama a Supabase signOut y redirige al login. */}
+          <button
+            onClick={async () => {
+              try {
+                const supabase = getSupabaseClient();
+                await supabase.auth.signOut();
+                router.replace('/admin/login');
+              } catch (err) {
+                console.error('Error al cerrar sesión:', err);
+              }
+            }}
+            style={{ marginRight: 12, padding: '8px 12px', borderRadius: 8 }}
+          >
+            Cerrar sesión
+          </button>
           <Link href="/admin/ventas" style={styles.linkButton}>
             Ver ventas
           </Link>

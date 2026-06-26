@@ -1,9 +1,41 @@
-'use client';
+"use client";
+
+// Forzamos render dinámico en tiempo de ejecución para evitar prerender en build
+export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getSupabaseClient } from '../../../lib/supabase';
 
 export default function VentasPage() {
+  const router = useRouter();
+  // Comprobamos que exista una sesión activa antes de cargar contenido.
+  useEffect(() => {
+    let mounted = true;
+    let subscription;
+
+    const comprobar = async () => {
+      try {
+        const supabase = getSupabaseClient();
+        const { data } = await supabase.auth.getSession();
+        if (mounted && !data?.session) {
+          router.replace('/admin/login');
+        }
+
+        subscription = supabase.auth.onAuthStateChange((event, session) => {
+          if (!session) router.replace('/admin/login');
+        });
+      } catch (err) {
+        console.error('Error comprobando sesión:', err);
+        if (mounted) router.replace('/admin/login');
+      }
+    };
+
+    void comprobar();
+
+    return () => subscription?.unsubscribe?.();
+  }, [router]);
   // Estado para guardar las órdenes recuperadas desde Supabase.
   const [ordenes, setOrdenes] = useState([]);
 
