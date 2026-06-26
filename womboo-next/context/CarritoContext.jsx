@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 // Creamos el contexto de React. Un contexto es como un "canal global"
 // por el cual varios componentes pueden compartir información sin pasarla
@@ -100,13 +100,13 @@ export function CarritoProvider({ children }) {
   };
 
   // Limpia por completo el carrito y deja el almacenamiento local vacío.
-  const vaciarCarrito = () => {
+  const vaciarCarrito = useCallback(() => {
     setItems([]);
 
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem(STORAGE_KEY);
     }
-  };
+  }, []);
 
   // Calcula la cantidad total de artículos en el carrito.
   const cantidadTotal = useMemo(
