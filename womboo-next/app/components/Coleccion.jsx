@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useCarrito } from '@/context/CarritoContext';
 import styles from './Coleccion.module.css';
@@ -23,6 +23,22 @@ export default function Coleccion() {
 
   // Obtenemos la función para agregar productos desde el contexto global.
   const { agregarProducto } = useCarrito();
+  
+  // Estado para guardar los IDs de productos agregados recientemente.
+  // Usamos un array de ids para poder renderizar condicionalmente el texto
+  // solamente en el botón del producto correspondiente.
+  const [recientementeAgregado, setRecientementeAgregado] = useState([]);
+
+  // Ref para almacenar timeouts por producto y limpiarlos al desmontar.
+  const timeoutsRef = useRef({});
+
+  // Limpiar timeouts si el componente se desmonta para evitar fugas de memoria.
+  useEffect(() => {
+    return () => {
+      Object.values(timeoutsRef.current).forEach((tid) => clearTimeout(tid));
+      timeoutsRef.current = {};
+    };
+  }, []);
 
   // useEffect que se ejecuta una sola vez al montar el componente
   // Se encarga de obtener los productos de la API
@@ -134,11 +150,41 @@ export default function Coleccion() {
                 </p>
                 <button
                   type="button"
-                  className={styles.addToCartButton}
-                  onClick={() => agregarProducto(producto)}
+                  // Añadimos una clase condicional si este producto fue agregado recientemente
+                  className={
+                    `${styles.addToCartButton} ${
+                      recientementeAgregado.includes(producto.id) ? styles.added : ''
+                    }`
+                  }
+                  onClick={() => {
+                    // Llamamos a la función que agrega al carrito (contexto)
+                    agregarProducto(producto);
+
+                    // Si ya está marcado, no lo añadimos de nuevo (renovamos el timeout más abajo)
+                    setRecientementeAgregado((prev) => {
+                      if (prev.includes(producto.id)) return prev;
+                      return [...prev, producto.id];
+                    });
+
+                    // Si ya existe un timeout para este producto, lo limpiamos antes de crear uno nuevo.
+                    if (timeoutsRef.current[producto.id]) {
+                      clearTimeout(timeoutsRef.current[producto.id]);
+                    }
+
+                    // Creamos un timeout que quitará el estado "Agregado" luego de 2 segundos.
+                    const timeoutId = setTimeout(() => {
+                      setRecientementeAgregado((prev) => prev.filter((id) => id !== producto.id));
+                      delete timeoutsRef.current[producto.id];
+                    }, 2000);
+
+                    // Guardamos el id del timeout para poder limpiarlo si el componente se desmonta.
+                    timeoutsRef.current[producto.id] = timeoutId;
+                  }}
                   disabled={Number(producto.stock || 0) <= 0}
                 >
-                  {Number(producto.stock || 0) > 0 ? 'Agregar al carrito' : 'Agotado'}
+                  {Number(producto.stock || 0) > 0
+                    ? (recientementeAgregado.includes(producto.id) ? 'Agregado ✓' : 'Agregar al carrito')
+                    : 'Agotado'}
                 </button>
               </div>
             ))
