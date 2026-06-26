@@ -1,9 +1,38 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getSupabaseClient } from '../../../lib/supabase';
 
 export default function MensajesPage() {
+  const router = useRouter();
+  const supabase = getSupabaseClient();
+
+  // Verificamos sesión activa antes de cargar mensajes.
+  useEffect(() => {
+    let mounted = true;
+
+    const comprobar = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (mounted && !data?.session) {
+          router.replace('/admin/login');
+        }
+      } catch (err) {
+        console.error('Error comprobando sesión:', err);
+        if (mounted) router.replace('/admin/login');
+      }
+    };
+
+    void comprobar();
+
+    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) router.replace('/admin/login');
+    });
+
+    return () => subscription?.unsubscribe();
+  }, [router, supabase]);
   // Estado para guardar los mensajes recuperados desde Supabase.
   const [mensajes, setMensajes] = useState([]);
 

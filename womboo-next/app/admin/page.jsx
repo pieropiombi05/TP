@@ -1,7 +1,9 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getSupabaseClient } from '../../lib/supabase';
 
 // Estado inicial del formulario para crear o editar un producto.
 const estadoInicial = {
@@ -13,6 +15,39 @@ const estadoInicial = {
 };
 
 export default function AdminPage() {
+  const router = useRouter();
+  const supabase = getSupabaseClient();
+
+  // Verificamos la sesión al montar. Si no hay sesión activa redirigimos al login.
+  useEffect(() => {
+    let mounted = true;
+
+    const comprobar = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (mounted && !data?.session) {
+          router.replace('/admin/login');
+        }
+      } catch (err) {
+        console.error('Error comprobando sesión:', err);
+        if (mounted) router.replace('/admin/login');
+      }
+    };
+
+    void comprobar();
+
+    // Nos suscribimos a cambios de estado de auth para manejar signOut desde otra pestaña.
+    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        router.replace('/admin/login');
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription?.unsubscribe();
+    };
+  }, [router, supabase]);
   // Lista de productos que se muestran en la tabla.
   const [productos, setProductos] = useState([]);
 
@@ -165,6 +200,20 @@ export default function AdminPage() {
         </p>
 
         <div style={styles.actionsRow}>
+          {/* Botón para cerrar sesión: llama a Supabase signOut y redirige al login. */}
+          <button
+            onClick={async () => {
+              try {
+                await supabase.auth.signOut();
+                router.replace('/admin/login');
+              } catch (err) {
+                console.error('Error al cerrar sesión:', err);
+              }
+            }}
+            style={{ marginRight: 12, padding: '8px 12px', borderRadius: 8 }}
+          >
+            Cerrar sesión
+          </button>
           <Link href="/admin/ventas" style={styles.linkButton}>
             Ver ventas
           </Link>

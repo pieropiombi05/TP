@@ -1,9 +1,38 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getSupabaseClient } from '../../../lib/supabase';
 
 export default function VentasPage() {
+  const router = useRouter();
+  const supabase = getSupabaseClient();
+
+  // Comprobamos que exista una sesión activa antes de cargar contenido.
+  useEffect(() => {
+    let mounted = true;
+
+    const comprobar = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (mounted && !data?.session) {
+          router.replace('/admin/login');
+        }
+      } catch (err) {
+        console.error('Error comprobando sesión:', err);
+        if (mounted) router.replace('/admin/login');
+      }
+    };
+
+    void comprobar();
+
+    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) router.replace('/admin/login');
+    });
+
+    return () => subscription?.unsubscribe();
+  }, [router, supabase]);
   // Estado para guardar las órdenes recuperadas desde Supabase.
   const [ordenes, setOrdenes] = useState([]);
 
