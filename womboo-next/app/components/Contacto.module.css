@@ -3,8 +3,8 @@
    ======================================== */
 .contact {
   padding: 6rem 2rem;
-  background-color: var(--bg-dark);
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--section-divider);
 }
 
 .contactTitle {
@@ -13,10 +13,19 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-white);
+  color: var(--text-primary);
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 0.75rem;
   animation: fadeIn 1s ease-out;
+}
+
+.contactTitle::before {
+  content: '03 / CONTACTO';
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
+  color: var(--text-secondary);
 }
 
 .contactForm {
@@ -36,50 +45,51 @@
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-white);
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
   font-weight: 700;
 }
 
 .formGroup input,
 .formGroup textarea {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--input-bg);
   border: 1px solid var(--border-color);
-  color: var(--text-white);
+  color: var(--text-primary);
   padding: 1rem;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   transition: var(--transition);
   resize: vertical;
+  border-radius: 12px;
 }
 
 .formGroup input::placeholder,
 .formGroup textarea::placeholder {
-  color: var(--text-light-gray);
+  color: var(--text-secondary);
 }
 
 .formGroup input:focus,
 .formGroup textarea:focus {
   outline: none;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: var(--text-gray);
+  background-color: var(--input-bg-hover);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 /* Estilos para input con error de validación */
 .inputError {
-  border-color: #ef4444 !important;
-  background-color: rgba(239, 68, 68, 0.05) !important;
+  border-color: var(--error) !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
 }
 
 .inputError:focus {
-  border-color: #dc2626 !important;
-  background-color: rgba(239, 68, 68, 0.08) !important;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  border-color: var(--error) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
 
 /* Estilos para los mensajes de error debajo de cada campo */
 .errorMessage {
-  color: #ef4444;
+  color: var(--error);
   font-size: 0.8rem;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.02em;
@@ -104,8 +114,8 @@
   width: 100%;
   padding: 1.2rem;
   background-color: transparent;
-  border: 1px solid var(--text-white);
-  color: var(--text-white);
+  border: 1px solid var(--accent);
+  color: var(--text-primary);
   font-family: 'Space Mono', monospace;
   font-size: 0.9rem;
   letter-spacing: 0.08em;
@@ -113,19 +123,20 @@
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
+  border-radius: 999px;
 }
 
 .formButton:hover:not(:disabled) {
-  background-color: var(--text-white);
-  color: var(--bg-dark);
+  background-color: var(--accent);
+  color: var(--bg-primary);
 }
 
 /* Estilos para el botón cuando está en estado disabled (enviando) */
 .formButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  border-color: var(--text-light-gray);
-  color: var(--text-light-gray);
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
 }
 
 .formMessage {
@@ -142,7 +153,7 @@
 
 /* Estilos para mensaje de éxito */
 .mensajeExito {
-  color: #4ade80;
+  color: var(--success);
   background-color: rgba(74, 222, 128, 0.1);
   border: 1px solid rgba(74, 222, 128, 0.3);
   border-radius: 4px;
@@ -150,7 +161,7 @@
 
 /* Estilos para mensaje de error */
 .mensajeError {
-  color: #ef4444;
+  color: var(--error);
   background-color: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 4px;

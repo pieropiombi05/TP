@@ -158,6 +158,7 @@ export default function AdminPage() {
   return (
     <main style={styles.page}>
       <section style={styles.panel}>
+        <p style={styles.eyebrow}>01 / ADMIN</p>
         <h1 style={styles.title}>Administración de productos</h1>
         <p style={styles.subtitle}>
           Agrega, edita o elimina productos desde Supabase.
@@ -301,23 +302,32 @@ const styles = {
   page: {
     minHeight: '100vh',
     padding: '40px 20px',
-    background: '#0a0a0a',
-    color: '#ffffff'
+    background: 'var(--bg-primary)',
+    color: 'var(--text-primary)'
   },
   panel: {
     maxWidth: '1200px',
     margin: '0 auto',
-    background: '#111111',
-    border: '1px solid #2a2a2a',
+    background: 'var(--surface)',
+    border: '1px solid var(--border-color)',
     borderRadius: '16px',
-    padding: '24px'
+    padding: '24px',
+    boxShadow: '0 18px 40px var(--shadow-soft)'
+  },
+  eyebrow: {
+    fontFamily: 'Space Mono, monospace',
+    fontSize: '0.8rem',
+    letterSpacing: '0.24em',
+    textTransform: 'uppercase',
+    color: 'var(--text-secondary)',
+    marginBottom: '8px'
   },
   title: {
     fontSize: '2rem',
     marginBottom: '8px'
   },
   subtitle: {
-    color: '#b0b0b0',
+    color: 'var(--text-secondary)',
     marginBottom: '16px'
   },
   actionsRow: {
@@ -326,9 +336,9 @@ const styles = {
   linkButton: {
     display: 'inline-block',
     padding: '10px 14px',
-    borderRadius: '8px',
-    background: '#ffffff',
-    color: '#111111',
+    borderRadius: '999px',
+    background: 'var(--accent)',
+    color: 'var(--bg-primary)',
     textDecoration: 'none',
     fontWeight: 600
   },
@@ -343,9 +353,9 @@ const styles = {
   input: {
     padding: '10px 12px',
     borderRadius: '8px',
-    border: '1px solid #444',
-    background: '#1b1b1b',
-    color: '#fff'
+    border: '1px solid var(--border-color)',
+    background: 'var(--input-bg)',
+    color: 'var(--text-primary)'
   },
   buttonRow: {
     display: 'flex',
@@ -354,22 +364,22 @@ const styles = {
   },
   primaryButton: {
     padding: '10px 14px',
-    borderRadius: '8px',
+    borderRadius: '999px',
     border: 'none',
-    background: '#ffffff',
-    color: '#111',
+    background: 'var(--accent)',
+    color: 'var(--bg-primary)',
     cursor: 'pointer'
   },
   secondaryButton: {
     padding: '10px 14px',
-    borderRadius: '8px',
-    border: '1px solid #666',
+    borderRadius: '999px',
+    border: '1px solid var(--border-color)',
     background: 'transparent',
-    color: '#fff',
+    color: 'var(--text-primary)',
     cursor: 'pointer'
   },
   error: {
-    color: '#ff6b6b',
+    color: 'var(--error)',
     marginBottom: '16px'
   },
   tableWrapper: {
@@ -386,12 +396,12 @@ const styles = {
   th: {
     textAlign: 'left',
     padding: '10px',
-    borderBottom: '1px solid #333',
-    color: '#b0b0b0'
+    borderBottom: '1px solid var(--section-divider)',
+    color: 'var(--text-secondary)'
   },
   td: {
     padding: '10px',
-    borderBottom: '1px solid #222'
+    borderBottom: '1px solid var(--section-divider)'
   },
   image: {
     width: '48px',
@@ -402,17 +412,17 @@ const styles = {
   editButton: {
     marginRight: '8px',
     padding: '6px 10px',
-    borderRadius: '6px',
+    borderRadius: '999px',
     border: 'none',
-    background: '#f5c542',
-    color: '#111',
+    background: 'var(--accent)',
+    color: 'var(--bg-primary)',
     cursor: 'pointer'
   },
   deleteButton: {
     padding: '6px 10px',
-    borderRadius: '6px',
+    borderRadius: '999px',
     border: 'none',
-    background: '#ff5c5c',
+    background: 'var(--error)',
     color: '#fff',
     cursor: 'pointer'
   }

@@ -7,8 +7,9 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background-color: var(--bg-dark);
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--section-divider);
+  position: relative;
 }
 
 .heroContent {
@@ -25,7 +26,7 @@
   text-transform: uppercase;
   line-height: 1;
   margin-bottom: 2rem;
-  color: var(--text-white);
+  color: var(--text-primary);
 }
 
 .heroTagline {
@@ -33,7 +34,7 @@
   font-size: clamp(1.2rem, 4vw, 1.8rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-white);
+  color: var(--text-primary);
   font-weight: 700;
   margin-bottom: 3rem;
   animation: fadeIn 1s ease-out 0.2s both;
@@ -42,14 +43,14 @@
 .heroDivider {
   width: 4rem;
   height: 1px;
-  background-color: var(--text-white);
+  background-color: var(--accent);
   margin: 2rem auto;
   animation: fadeIn 1s ease-out 0.4s both;
 }
 
 .heroDescription {
   font-size: clamp(1rem, 2vw, 1.3rem);
-  color: var(--text-gray);
+  color: var(--text-secondary);
   letter-spacing: 0.02em;
   line-height: 1.8;
   max-width: 600px;

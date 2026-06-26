@@ -2,8 +2,8 @@
    FOOTER
    ======================================== */
 .footer {
-  background-color: var(--bg-darker);
-  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--section-divider);
   padding: 4rem 2rem;
 }
 
@@ -18,12 +18,12 @@
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-light-gray);
+  color: var(--text-secondary);
   line-height: 2;
 }
 
 .footerDividerText {
-  color: var(--text-gray);
+  color: var(--text-muted);
   margin: 1rem 0;
   font-weight: 700;
 }
