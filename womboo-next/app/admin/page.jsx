@@ -167,6 +167,9 @@ export default function AdminPage() {
           <Link href="/admin/ventas" style={styles.linkButton}>
             Ver ventas
           </Link>
+          <Link href="/admin/mensajes" style={styles.linkButton}>
+            Ver mensajes
+          </Link>
         </div>
 
         <form onSubmit={manejarSubmit} style={styles.form}>
