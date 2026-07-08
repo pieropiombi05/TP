@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getSupabaseClient } from '../../../lib/supabase';
+import { getSupabaseClient, marcarIndicioSesion } from '../../../lib/supabase';
 
 // Página de login para el admin. Usa Supabase Auth (signInWithPassword).
 export default function AdminLoginPage() {
@@ -36,6 +36,7 @@ export default function AdminLoginPage() {
 
       // Si la autenticación fue exitosa, redirigimos al panel admin.
       if (data?.session) {
+        marcarIndicioSesion();
         router.replace('/admin');
       } else {
         setError('No se pudo iniciar sesión. Verifique sus credenciales.');

@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '../../../../lib/supabase.js';
+import { getSupabaseAdmin } from '../../../../lib/supabaseAdmin.js';
+import { requireAdmin, respuestaNoAutorizado } from '../../../../lib/auth.js';
 
 // Fuerza la consulta a Supabase en cada petición para que los cambios aparezcan inmediatamente.
 export const dynamic = 'force-dynamic';
 
 // Función auxiliar para centralizar la lectura de productos desde Supabase.
+// Usa el service role: con RLS activo el anon key solo puede leer productos,
+// pero el resto de esta ruta (POST/PUT/DELETE) necesita escribir.
 async function obtenerProductos() {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase
     .from('productos')
@@ -20,7 +23,12 @@ async function obtenerProductos() {
   return data ?? [];
 }
 
-export async function GET() {
+export async function GET(request) {
+  const auth = await requireAdmin(request);
+  if (auth.error) {
+    return respuestaNoAutorizado(auth.error);
+  }
+
   try {
     // Trae todos los productos para mostrarlos en la vista administrativa.
     const productos = await obtenerProductos();
@@ -44,8 +52,13 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const auth = await requireAdmin(request);
+  if (auth.error) {
+    return respuestaNoAutorizado(auth.error);
+  }
+
   try {
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseAdmin();
 
     // Lee el cuerpo de la petición enviada desde la página de administración.
     const body = await request.json();
@@ -104,8 +117,13 @@ export async function POST(request) {
 }
 
 export async function PUT(request) {
+  const auth = await requireAdmin(request);
+  if (auth.error) {
+    return respuestaNoAutorizado(auth.error);
+  }
+
   try {
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseAdmin();
 
     // Lee el cuerpo de la petición para obtener el id y los campos a actualizar.
     const body = await request.json();
@@ -161,8 +179,13 @@ export async function PUT(request) {
 }
 
 export async function DELETE(request) {
+  const auth = await requireAdmin(request);
+  if (auth.error) {
+    return respuestaNoAutorizado(auth.error);
+  }
+
   try {
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseAdmin();
 
     // Lee el id del producto que se desea eliminar desde el cuerpo de la petición.
     const body = await request.json();

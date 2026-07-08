@@ -1,5 +1,5 @@
-import MercadoPagoConfig, { Payment } from 'mercadopago';
-import { getSupabaseClient } from '../../../lib/supabase.js';
+import MercadoPagoConfig, { Payment, WebhookSignatureValidator } from 'mercadopago';
+import { getSupabaseAdmin } from '../../../lib/supabaseAdmin.js';
 
 // Fuerza esta ruta a responder con datos frescos en cada petición.
 export const dynamic = 'force-dynamic';
@@ -59,8 +59,48 @@ async function descontarStock(supabase, productosVendidos) {
   }
 }
 
+// Verifica que la notificación venga realmente de Mercado Pago validando la
+// firma del header x-signature (HMAC-SHA256 sobre "id:<data.id>;request-id:<x-request-id>;ts:<ts>;"
+// con el secret de la integración, comparado en tiempo constante). Usamos el
+// validador oficial del SDK (mercadopago -> WebhookSignatureValidator), que
+// implementa exactamente ese esquema.
+function verificarFirmaWebhook(request, dataId) {
+  const secret = process.env.MP_WEBHOOK_SECRET;
+
+  if (!secret) {
+    // Si no podemos validar la firma, fallamos cerrado: no procesamos la notificación.
+    console.error(
+      'MP_WEBHOOK_SECRET no está configurado: se rechaza la notificación del webhook por no poder validar su firma.'
+    );
+    return false;
+  }
+
+  try {
+    WebhookSignatureValidator.validate({
+      xSignature: request.headers.get('x-signature'),
+      xRequestId: request.headers.get('x-request-id'),
+      dataId,
+      secret
+    });
+    return true;
+  } catch (error) {
+    console.error('Firma de webhook de Mercado Pago inválida:', error?.message || error);
+    return false;
+  }
+}
+
 export async function POST(request) {
   try {
+    // El data.id que Mercado Pago firma es el de la query string, no el del body.
+    const dataId = request.nextUrl.searchParams.get('data.id');
+
+    if (!verificarFirmaWebhook(request, dataId)) {
+      return Response.json(
+        { message: 'Firma de la notificación inválida o ausente.' },
+        { status: 401 }
+      );
+    }
+
     // Leemos el cuerpo de la notificación enviada por Mercado Pago.
     // El payload suele incluir un campo data.id con el payment_id a consultar.
     const body = await request.json().catch(() => ({}));
@@ -93,7 +133,7 @@ export async function POST(request) {
 
     // Obtenemos el cliente de Supabase y verificamos si la orden ya existe.
     // Esto evita duplicados si Mercado Pago reenvía la misma notificación.
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseAdmin();
     const { data: ordenExistente, error: errorConsulta } = await supabase
       .from('ordenes')
       .select('*')

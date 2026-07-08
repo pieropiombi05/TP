@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '../../../../lib/supabase.js';
+import { getSupabaseAdmin } from '../../../../lib/supabaseAdmin.js';
+import { requireAdmin, respuestaNoAutorizado } from '../../../../lib/auth.js';
 
 // Fuerza la consulta a Supabase en cada petición para que los mensajes aparezcan de inmediato.
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request) {
+  const auth = await requireAdmin(request);
+  if (auth.error) {
+    return respuestaNoAutorizado(auth.error);
+  }
+
   try {
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseAdmin();
 
     // Trae todos los mensajes de la tabla mensajes ordenados por fecha descendente.
     const { data, error } = await supabase

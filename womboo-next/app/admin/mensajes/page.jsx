@@ -6,11 +6,13 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getSupabaseClient } from '../../../lib/supabase';
+import { getSupabaseClient, obtenerAccessToken, marcarIndicioSesion, limpiarIndicioSesion } from '../../../lib/supabase';
 
 export default function MensajesPage() {
   const router = useRouter();
-  // Verificamos sesión activa antes de cargar mensajes.
+  // Guard de cliente: solo evita el flash de contenido para quien no tiene
+  // sesión. NO es la seguridad real: eso lo garantiza requireAdmin del lado
+  // del servidor (lib/auth.js), que valida el JWT en cada llamada a la API.
   useEffect(() => {
     let mounted = true;
     let subscription;
@@ -19,12 +21,22 @@ export default function MensajesPage() {
       try {
         const supabase = getSupabaseClient();
         const { data } = await supabase.auth.getSession();
-        if (mounted && !data?.session) {
-          router.replace('/admin/login');
+        if (mounted) {
+          if (data?.session) {
+            marcarIndicioSesion();
+          } else {
+            limpiarIndicioSesion();
+            router.replace('/admin/login');
+          }
         }
 
         subscription = supabase.auth.onAuthStateChange((event, session) => {
-          if (!session) router.replace('/admin/login');
+          if (session) {
+            marcarIndicioSesion();
+          } else {
+            limpiarIndicioSesion();
+            router.replace('/admin/login');
+          }
         });
       } catch (err) {
         console.error('Error comprobando sesión:', err);
@@ -50,7 +62,15 @@ export default function MensajesPage() {
     const cargarMensajes = async () => {
       try {
         setCargando(true);
-        const respuesta = await fetch('/api/admin/mensajes');
+        const token = await obtenerAccessToken();
+        const respuesta = await fetch('/api/admin/mensajes', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+
+        if (respuesta.status === 401 || respuesta.status === 403) {
+          router.replace('/admin/login');
+          return;
+        }
 
         if (!respuesta.ok) {
           throw new Error('No se pudieron cargar los mensajes.');
@@ -68,7 +88,7 @@ export default function MensajesPage() {
     };
 
     void cargarMensajes();
-  }, []);
+  }, [router]);
 
   return (
     <main style={styles.page}>
