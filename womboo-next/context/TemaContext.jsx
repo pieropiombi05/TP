@@ -26,6 +26,12 @@ export function TemaProvider({ children }) {
       const temaGuardado = window.localStorage.getItem(STORAGE_KEY);
 
       if (temaGuardado === 'light' || temaGuardado === 'dark') {
+        // El estado inicial en el server siempre es 'dark' para evitar un
+        // mismatch de hidratación. Este setState sincrónico dentro del efecto
+        // es intencional: solo se dispara una vez al montar, antes de que el
+        // usuario vea contenido interactivo, y restaura la preferencia real
+        // guardada en localStorage sin poder leerla durante el render del server.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setTema(temaGuardado);
       }
     } catch (error) {

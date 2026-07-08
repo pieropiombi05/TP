@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCarrito } from '@/context/CarritoContext';
@@ -83,7 +84,7 @@ export default function CarritoPage() {
             {items.map((item) => (
               <article key={item.id} className={styles.itemCard}>
                 <div className={styles.itemImageWrapper}>
-                  <img src={item.imagen} alt={item.nombre} className={styles.itemImage} />
+                  <Image src={item.imagen} alt={item.nombre} fill className={styles.itemImage} />
                 </div>
 
                 <div className={styles.itemInfo}>
