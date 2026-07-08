@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Womboo — Tienda Streetwear (Next.js)
 
-## Getting Started
+Aplicación web de e-commerce de **Womboo**, marca de ropa streetwear. Este proyecto reemplaza al sitio estático original (`womboo/`) por una tienda completa construida con Next.js: catálogo de productos, carrito de compras, checkout con MercadoPago y un panel de administración.
 
-First, run the development server:
+## Stack tecnológico
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [Next.js 16](https://nextjs.org) (App Router)
+- [React 19](https://react.dev)
+- TypeScript
+- [Tailwind CSS 4](https://tailwindcss.com)
+- [Supabase](https://supabase.com) (`@supabase/supabase-js`) como backend y base de datos
+- [MercadoPago](https://www.mercadopago.com.ar/developers) como pasarela de pagos
+- Fuentes [Inter](https://fonts.google.com/specimen/Inter) y [Space Mono](https://fonts.google.com/specimen/Space+Mono), cargadas vía `next/font/google`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requisitos previos
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 20 o superior
+- npm
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Instalación y puesta en marcha
 
-## Learn More
+1. Instalar dependencias:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Crear un archivo `.env.local` en la raíz de `womboo-next/` con las variables de entorno detalladas más abajo.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Levantar el servidor de desarrollo:
 
-## Deploy on Vercel
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts disponibles
+
+| Script          | Descripción                                              |
+| --------------- | --------------------------------------------------------- |
+| `npm run dev`   | Levanta el servidor de desarrollo con recarga en caliente. |
+| `npm run build` | Genera el build de producción.                            |
+| `npm run start` | Sirve el build de producción ya generado.                 |
+| `npm run lint`  | Corre ESLint sobre el proyecto.                            |
+
+## Variables de entorno
+
+| Variable                        | Descripción                                                                 |
+| -------------------------------- | ---------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`       | URL del proyecto de Supabase.                                                |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Clave anónima (pública) del proyecto de Supabase.                            |
+| `NEXT_PUBLIC_APP_URL`            | URL base de la aplicación (usada para armar las URLs de retorno de MercadoPago). |
+| `MP_ACCESS_TOKEN`                | Access token de MercadoPago. **Es secreto: nunca debe commitearse.**         |
+
+Podés usar `.env.example` como plantilla, completando los valores reales en tu `.env.local` (que no se sube al repositorio).
+
+## Estructura del proyecto
+
+### Páginas (`app/`)
+
+- `/` — Home.
+- `/coleccion` — Catálogo de productos.
+- `/carrito` — Carrito de compras.
+- `/checkout/success`, `/checkout/failure`, `/checkout/pending` — Resultados del pago con MercadoPago.
+- `/admin` — Panel de administración (protegido con Supabase Auth), con subrutas `/admin/login`, `/admin/mensajes` y `/admin/ventas`.
+
+El entrypoint de la home es `app/page.jsx`.
+
+### API (`app/api/`)
+
+- `productos` — Listado de productos.
+- `checkout` — Creación de la preferencia de pago en MercadoPago.
+- `contacto` — Envío del formulario de contacto.
+- `webhook` — Webhook de notificaciones de MercadoPago.
+- `admin/productos`, `admin/mensajes`, `admin/ventas` — Endpoints del panel de administración.
+
+## Despliegue
+
+El proyecto está desplegado en [Vercel](https://vercel.com). Para desplegar tu propia instancia, configurá en el dashboard de Vercel (Settings → Environment Variables) las mismas variables listadas en la sección [Variables de entorno](#variables-de-entorno).

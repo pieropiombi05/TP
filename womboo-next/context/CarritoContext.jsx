@@ -132,7 +132,7 @@ export function CarritoProvider({ children }) {
       cantidadTotal,
       total,
     }),
-    [items, cantidadTotal, total]
+    [items, cantidadTotal, total, vaciarCarrito]
   );
 
   return <CarritoContext.Provider value={value}>{children}</CarritoContext.Provider>;
