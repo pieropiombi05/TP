@@ -4,9 +4,9 @@
 export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getSupabaseClient } from '../../lib/supabase';
+import { getSupabaseClient, obtenerAccessToken, marcarIndicioSesion, limpiarIndicioSesion } from '../../lib/supabase';
 
 // Estado inicial del formulario para crear o editar un producto.
 const estadoInicial = {
@@ -19,7 +19,9 @@ const estadoInicial = {
 
 export default function AdminPage() {
   const router = useRouter();
-  // Verificamos la sesión al montar. Si no hay sesión activa redirigimos al login.
+  // Guard de cliente: solo evita el flash de contenido para quien no tiene
+  // sesión. NO es la seguridad real: eso lo garantiza requireAdmin del lado
+  // del servidor (lib/auth.js), que valida el JWT en cada llamada a la API.
   useEffect(() => {
     let mounted = true;
     let subscription;
@@ -29,13 +31,21 @@ export default function AdminPage() {
         // Llamamos a getSupabaseClient() solo en el cliente dentro del useEffect.
         const supabase = getSupabaseClient();
         const { data } = await supabase.auth.getSession();
-        if (mounted && !data?.session) {
-          router.replace('/admin/login');
+        if (mounted) {
+          if (data?.session) {
+            marcarIndicioSesion();
+          } else {
+            limpiarIndicioSesion();
+            router.replace('/admin/login');
+          }
         }
 
         // Nos suscribimos a cambios de estado de auth para manejar signOut desde otra pestaña.
         subscription = supabase.auth.onAuthStateChange((event, session) => {
-          if (!session) {
+          if (session) {
+            marcarIndicioSesion();
+          } else {
+            limpiarIndicioSesion();
             router.replace('/admin/login');
           }
         });
@@ -68,10 +78,18 @@ export default function AdminPage() {
   const [formulario, setFormulario] = useState(estadoInicial);
 
   // Obtiene los productos desde la API de administración.
-  async function cargarProductos() {
+  const cargarProductos = useCallback(async () => {
     try {
       setCargando(true);
-      const respuesta = await fetch('/api/admin/productos');
+      const token = await obtenerAccessToken();
+      const respuesta = await fetch('/api/admin/productos', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+
+      if (respuesta.status === 401 || respuesta.status === 403) {
+        router.replace('/admin/login');
+        return;
+      }
 
       if (!respuesta.ok) {
         throw new Error('No se pudieron cargar los productos.');
@@ -86,7 +104,7 @@ export default function AdminPage() {
     } finally {
       setCargando(false);
     }
-  }
+  }, [router]);
 
   // useEffect para cargar los productos al abrir la página.
   useEffect(() => {
@@ -95,7 +113,7 @@ export default function AdminPage() {
     }, 0);
 
     return () => window.clearTimeout(temporizador);
-  }, []);
+  }, [cargarProductos]);
 
   // Actualiza los campos del formulario en cada cambio del input.
   const manejarCambio = (evento) => {
@@ -118,15 +136,22 @@ export default function AdminPage() {
       };
 
       const metodo = editandoId ? 'PUT' : 'POST';
+      const token = await obtenerAccessToken();
       const respuesta = await fetch('/api/admin/productos', {
         method: metodo,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify(
           editandoId ? { id: editandoId, ...payload } : payload
         )
       });
+
+      if (respuesta.status === 401 || respuesta.status === 403) {
+        router.replace('/admin/login');
+        return;
+      }
 
       const datos = await respuesta.json();
 
@@ -164,13 +189,20 @@ export default function AdminPage() {
     }
 
     try {
+      const token = await obtenerAccessToken();
       const respuesta = await fetch('/api/admin/productos', {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({ id })
       });
+
+      if (respuesta.status === 401 || respuesta.status === 403) {
+        router.replace('/admin/login');
+        return;
+      }
 
       const datos = await respuesta.json();
 

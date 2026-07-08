@@ -52,6 +52,9 @@ Aplicación web de e-commerce de **Womboo**, marca de ropa streetwear. Este proy
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Clave anónima (pública) del proyecto de Supabase.                            |
 | `NEXT_PUBLIC_APP_URL`            | URL base de la aplicación (usada para armar las URLs de retorno de MercadoPago). |
 | `MP_ACCESS_TOKEN`                | Access token de MercadoPago. **Es secreto: nunca debe commitearse.**         |
+| `ADMIN_EMAILS`                   | Lista de emails autorizados como admin, separados por comas (ej: `a@womboo.com,b@womboo.com`). Un usuario autenticado con Supabase solo puede usar el panel `/admin` si su email está en esta lista. Se valida del lado del servidor en cada request a `/api/admin/*`. |
+| `SUPABASE_SERVICE_ROLE_KEY`      | Clave de service role de Supabase, usada solo en el servidor (`lib/supabaseAdmin.js`) para las operaciones privilegiadas (panel de admin, webhook de Mercado Pago) que necesitan saltear Row Level Security. **Es secreta y da acceso total a la base: nunca debe exponerse al cliente ni commitearse.** |
+| `MP_WEBHOOK_SECRET`              | Secret de la integración de Mercado Pago, usado en `app/api/webhook/route.js` para validar la firma (`x-signature`) de cada notificación entrante antes de procesarla. **Es secreto: nunca debe exponerse al cliente ni commitearse.** |
 
 Podés usar `.env.example` como plantilla, completando los valores reales en tu `.env.local` (que no se sube al repositorio).
 
@@ -63,7 +66,7 @@ Podés usar `.env.example` como plantilla, completando los valores reales en tu 
 - `/coleccion` — Catálogo de productos.
 - `/carrito` — Carrito de compras.
 - `/checkout/success`, `/checkout/failure`, `/checkout/pending` — Resultados del pago con MercadoPago.
-- `/admin` — Panel de administración (protegido con Supabase Auth), con subrutas `/admin/login`, `/admin/mensajes` y `/admin/ventas`.
+- `/admin` — Panel de administración (protegido con Supabase Auth y la allowlist `ADMIN_EMAILS`, validada del lado del servidor), con subrutas `/admin/login`, `/admin/mensajes` y `/admin/ventas`.
 
 El entrypoint de la home es `app/page.jsx`.
 

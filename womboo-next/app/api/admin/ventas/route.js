@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '../../../../lib/supabase.js';
+import { getSupabaseAdmin } from '../../../../lib/supabaseAdmin.js';
+import { requireAdmin, respuestaNoAutorizado } from '../../../../lib/auth.js';
 
 // Fuerza la consulta a Supabase en cada petición para que las ventas aparezcan al instante.
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request) {
+  const auth = await requireAdmin(request);
+  if (auth.error) {
+    return respuestaNoAutorizado(auth.error);
+  }
+
   try {
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseAdmin();
 
     // Trae todas las órdenes registradas en la tabla ordenes, ordenadas por fecha descendente.
     const { data, error } = await supabase
