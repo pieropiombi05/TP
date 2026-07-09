@@ -84,18 +84,18 @@ export async function POST(request) {
       mensaje: mensaje.trim(),
     };
 
-    // Insertamos el registro en Supabase y devolvemos el mensaje creado para confirmar el guardado.
+    // Insertamos el registro en Supabase. No usamos .select() porque el anon key
+    // tiene permiso de INSERT pero no de SELECT sobre "mensajes" (RLS), y encadenar
+    // .select() haría fallar el insert.
     const { data, error } = await supabase
       .from('mensajes')
-      .insert([mensajeParaGuardar])
-      .select()
-      .single();
+      .insert([mensajeParaGuardar]);
 
     if (error) {
       throw error;
     }
 
-    console.log('Mensaje guardado en Supabase:', data);
+    console.log('Mensaje guardado en Supabase:', mensajeParaGuardar);
 
     // Devolver respuesta de éxito con código 200 (OK)
     return Response.json(
