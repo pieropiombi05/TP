@@ -28,14 +28,15 @@ export async function POST(request) {
 
     // Creamos la preferencia de pago con el listado de productos.
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const webhookUrl = `${appUrl}/api/webhook`;
 
-    // Creamos la preferencia de pago con el listado de productos y la URL del webhook.
+    // Creamos la preferencia de pago con el listado de productos. Las notificaciones
+    // llegan por el webhook configurado en el panel de Mercado Pago (Tus integraciones
+    // → Webhooks), no por notification_url: ese canal firma con otra clave y en
+    // formato IPN (id/topic) que no podemos validar.
     const preference = new Preference(client);
     const resultado = await preference.create({
       body: {
         items: productos,
-        notification_url: webhookUrl,
         back_urls: {
           success: `${appUrl}/checkout/success`,
           failure: `${appUrl}/checkout/failure`,
