@@ -91,6 +91,15 @@ function verificarFirmaWebhook(request, dataId) {
 
 export async function POST(request) {
   try {
+    // TEMPORAL: logging de diagnóstico, quitar después
+    console.log('WEBHOOK_DEBUG', {
+      url: request.url,
+      dataId: request.nextUrl.searchParams.get('data.id'),
+      type: request.nextUrl.searchParams.get('type'),
+      xSignature: request.headers.get('x-signature'),
+      xRequestId: request.headers.get('x-request-id'),
+    });
+
     // El data.id que Mercado Pago firma es el de la query string, no el del body.
     const dataId = request.nextUrl.searchParams.get('data.id');
 
