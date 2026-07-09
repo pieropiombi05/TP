@@ -144,6 +144,16 @@ export async function POST(request) {
       );
     }
 
+    // Ignoramos ordenadamente las notificaciones que no correspondan a un pago
+    // (ej. merchant_order) para no procesarlas ni generar reintentos innecesarios.
+    const tipoNotificacion = request.nextUrl.searchParams.get('type');
+    if (tipoNotificacion !== 'payment' || !dataId) {
+      return Response.json(
+        { message: 'Notificación ignorada: no corresponde a un pago.', accepted: true },
+        { status: 200 }
+      );
+    }
+
     // Leemos el cuerpo de la notificación enviada por Mercado Pago.
     // El payload suele incluir un campo data.id con el payment_id a consultar.
     const body = await request.json().catch(() => ({}));
