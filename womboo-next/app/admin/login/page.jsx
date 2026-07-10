@@ -78,16 +78,9 @@ export default function AdminLoginPage() {
             <button type="submit" disabled={cargando} style={{ padding: '10px 14px' }}>
               {cargando ? 'Entrando…' : 'Entrar'}
             </button>
-            {/* Botón para volver a la página anterior. Si no hay historial, usar router.replace('/') */}
             <button
               type="button"
-              onClick={() => {
-                try {
-                  router.back();
-                } catch (err) {
-                  router.replace('/');
-                }
-              }}
+              onClick={() => router.push('/')}
               style={{ padding: '10px 14px' }}
             >
               Volver
