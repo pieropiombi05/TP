@@ -10,25 +10,17 @@ export default function AnimatedO() {
   const rafRef = useRef(null);
   // Desplazamiento de la pupila en em (relativo al tamaño de la letra).
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [usaCursor, setUsaCursor] = useState(true);
-
-  // En pantallas táctiles no hay cursor: la pupila queda centrada.
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-    const mq = window.matchMedia('(pointer: fine)');
-    const actualizar = () => {
-      setUsaCursor(mq.matches);
-      if (!mq.matches) setOffset({ x: 0, y: 0 });
-    };
-    actualizar();
-    mq.addEventListener('change', actualizar);
-    return () => mq.removeEventListener('change', actualizar);
-  }, []);
 
   // La pupila sigue el cursor. Calculamos el ángulo entre el centro de la
   // letra y el cursor, y desplazamos la pupila en esa dirección con un tope.
+  //
+  // Nota: no usamos matchMedia('(pointer: fine)') para decidir si hay que
+  // trackear el mouse. En muchas notebooks con pantalla táctil ese media
+  // query da "false" aunque el usuario esté usando el mouse, y la pupila
+  // quedaba centrada para siempre. En cambio miramos el pointerType de cada
+  // evento: solo mouse/lápiz mueven la pupila, y el toque la recentra.
   useEffect(() => {
-    if (typeof window === 'undefined' || !usaCursor) return undefined;
+    if (typeof window === 'undefined') return undefined;
 
     const mover = () => {
       const el = ojoRef.current;
@@ -51,17 +43,29 @@ export default function AnimatedO() {
       rafRef.current = null;
     };
 
-    const onMove = (e) => {
+    const onPointerMove = (e) => {
+      if (e.pointerType === 'touch') return;
       pointerRef.current = { x: e.clientX, y: e.clientY };
       if (!rafRef.current) rafRef.current = window.requestAnimationFrame(mover);
     };
 
-    window.addEventListener('mousemove', onMove);
+    // En pantallas táctiles no hay cursor: la pupila queda centrada.
+    const onTouchStart = () => {
+      if (rafRef.current) {
+        window.cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      setOffset({ x: 0, y: 0 });
+    };
+
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
     return () => {
-      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('touchstart', onTouchStart);
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
     };
-  }, [usaCursor]);
+  }, []);
 
   return (
     // La O real de la fuente (idéntica al resto del texto). La pupila se
