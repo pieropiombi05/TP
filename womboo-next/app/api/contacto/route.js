@@ -3,30 +3,10 @@
 // Este archivo recibe las peticiones POST desde el cliente, valida los datos y los guarda en Supabase
 
 import { getSupabaseClient } from '../../../lib/supabase.js';
+import { validarEmail, validarCampoNoVacio } from '../../../lib/validaciones.js';
 
 // Fuerza esta ruta a evaluar la información fresca en cada petición para que los mensajes aparezcan inmediatamente.
 export const dynamic = 'force-dynamic';
-
-/**
- * Función auxiliar para validar el formato de un email
- * Utiliza una expresión regular simple pero efectiva
- * @param {string} email - El email a validar
- * @returns {boolean} - true si el email tiene un formato válido
- */
-function validarEmail(email) {
-  // Expresión regular para validar email: debe tener formato usuario@dominio.extensión
-  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regexEmail.test(email);
-}
-
-/**
- * Función auxiliar para validar que un campo no esté vacío
- * @param {string} campo - El valor del campo a validar
- * @returns {boolean} - true si el campo no está vacío
- */
-function validarCampoNoVacio(campo) {
-  return campo && campo.trim().length > 0;
-}
 
 /**
  * Manejador de solicitudes POST
