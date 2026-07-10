@@ -54,7 +54,6 @@ Aplicación web de e-commerce de **Womboo**, marca de ropa streetwear. Este proy
 | `MP_ACCESS_TOKEN`                | Access token de MercadoPago. **Es secreto: nunca debe commitearse.**         |
 | `ADMIN_EMAILS`                   | Lista de emails autorizados como admin, separados por comas (ej: `a@womboo.com,b@womboo.com`). Un usuario autenticado con Supabase solo puede usar el panel `/admin` si su email está en esta lista. Se valida del lado del servidor en cada request a `/api/admin/*`. |
 | `SUPABASE_SERVICE_ROLE_KEY`      | Clave de service role de Supabase, usada solo en el servidor (`lib/supabaseAdmin.js`) para las operaciones privilegiadas (panel de admin, webhook de Mercado Pago) que necesitan saltear Row Level Security. **Es secreta y da acceso total a la base: nunca debe exponerse al cliente ni commitearse.** |
-| `MP_WEBHOOK_SECRET`              | Secret de la integración de Mercado Pago, usado en `app/api/webhook/route.js` para validar la firma (`x-signature`) de cada notificación entrante antes de procesarla. **Es secreto: nunca debe exponerse al cliente ni commitearse.** |
 
 Podés usar `.env.example` como plantilla, completando los valores reales en tu `.env.local` (que no se sube al repositorio).
 
@@ -75,7 +74,7 @@ El entrypoint de la home es `app/page.jsx`.
 - `productos` — Listado de productos.
 - `checkout` — Creación de la preferencia de pago en MercadoPago.
 - `contacto` — Envío del formulario de contacto.
-- `webhook` — Webhook de notificaciones de MercadoPago.
+- `webhook` — Webhook de notificaciones de MercadoPago (`app/api/webhook/route.js`). Al recibir una notificación, no confía en los datos del POST entrante: vuelve a consultar el pago real a Mercado Pago por su `payment_id` con `paymentClient.get()` (usando `MP_ACCESS_TOKEN`) y usa el estado que devuelve esa consulta para actualizar la orden en Supabase. De esta forma, un POST falso no puede inventar un pago aprobado que no existe, porque la confirmación siempre se verifica contra Mercado Pago.
 - `admin/productos`, `admin/mensajes`, `admin/ventas` — Endpoints del panel de administración.
 
 ## Despliegue
