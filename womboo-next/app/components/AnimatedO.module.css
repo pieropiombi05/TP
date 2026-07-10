@@ -37,5 +37,36 @@
   border-radius: 50%;
   background-color: currentColor;
   /* Suaviza el salto entre posiciones para que el seguimiento se sienta natural. */
-  transition: transform 150ms ease-out;
+  transition: transform 150ms ease-out, opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modo claro: el ojo está adormilado, pero la pupila se sigue viendo con
+   contraste; solo un poco más tenue que en modo oscuro. */
+.pupilSomnoliento {
+  opacity: 0.85;
+}
+
+/* Párpado que baja desde arriba. Al ser hijo de .iris, queda recortado con
+   la misma curva elíptica que la pupila (overflow: hidden + border-radius).
+   El borde inferior es recto (ojo entrecerrado geométrico) y lleva una línea
+   de contraste para que se note el filo del párpado sin importar dónde esté
+   la pupila. */
+.parpado {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-100%);
+  z-index: 3;
+  /* El color acompaña la transición general del tema; el movimiento del
+     párpado tiene su propio timing, un poco más lento, para sentirse fluido. */
+  transition: var(--transition), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.parpadoCerrado {
+  /* Cubre aproximadamente la mitad superior del ojo. */
+  transform: translateY(0);
 }

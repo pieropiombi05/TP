@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTema } from '@/context/TemaContext';
 import styles from './AnimatedO.module.css';
 
 export default function AnimatedO() {
+  // Solo lectura: en modo claro el ojo se entrecierra, en oscuro está despierto.
+  const { esLight } = useTema();
   // Ref al contenedor de la letra para saber dónde está en pantalla.
   const ojoRef = useRef(null);
   const pointerRef = useRef({ x: 0, y: 0 });
@@ -74,11 +77,12 @@ export default function AnimatedO() {
       <span className={styles.letter}>O</span>
       <span className={styles.iris}>
         <span
-          className={styles.pupil}
+          className={`${styles.pupil} ${esLight ? styles.pupilSomnoliento : ''}`}
           style={{
             transform: `translate(calc(-50% + ${offset.x}em), calc(-50% + ${offset.y}em))`,
           }}
         />
+        <span className={`${styles.parpado} ${esLight ? styles.parpadoCerrado : ''}`} />
       </span>
     </span>
   );
