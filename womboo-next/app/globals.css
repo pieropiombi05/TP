@@ -11,7 +11,7 @@
   --surface-strong: #111111;
   --text-primary: #f5f5f5;
   --text-secondary: #888888;
-  --text-muted: #666666;
+  --text-muted: #7a7a7a;
   --border-color: #1a1a1a;
   --accent: #a8a29e;
   --accent-soft: rgba(168, 162, 158, 0.16);
@@ -32,8 +32,8 @@ body.light {
   --surface: #e7e0d5;
   --surface-strong: #f3ebdf;
   --text-primary: #1a1a1a;
-  --text-secondary: #78716c;
-  --text-muted: #8c8178;
+  --text-secondary: #726b66;
+  --text-muted: #736a62;
   --border-color: #e7e0d5;
   --accent: #a8a29e;
   --accent-soft: rgba(168, 162, 158, 0.18);
