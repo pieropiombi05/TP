@@ -1,0 +1,18 @@
+.reveal {
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.reveal.hidden {
+  opacity: 0;
+  transform: translateY(48px);
+}
+
+/* El contenido nunca queda invisible: si por algún motivo esta clase llega
+   a aplicarse con reduced-motion activo, la neutralizamos igual. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal.hidden {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
