@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import MercadoPagoConfig, { Payment, WebhookSignatureValidator } from 'mercadopago';
 import { getSupabaseAdmin } from '../../../lib/supabaseAdmin.js';
 
@@ -92,48 +91,6 @@ function verificarFirmaWebhook(request, dataId) {
 
 export async function POST(request) {
   try {
-    // TEMPORAL: logging de diagnóstico, quitar después
-    console.log('WEBHOOK_DEBUG', {
-      url: request.url,
-      dataId: request.nextUrl.searchParams.get('data.id'),
-      type: request.nextUrl.searchParams.get('type'),
-      xSignature: request.headers.get('x-signature'),
-      xRequestId: request.headers.get('x-request-id'),
-    });
-
-    // TEMPORAL: logging de diagnóstico, quitar después
-    // Calculamos la firma manualmente para comparar contra la del SDK y aislar
-    // si el problema está en el secret o en el validador del SDK.
-    {
-      const debugDataId = request.nextUrl.searchParams.get('data.id');
-      const debugType = request.nextUrl.searchParams.get('type');
-      const debugXSignature = request.headers.get('x-signature');
-      const debugXRequestId = request.headers.get('x-request-id');
-
-      if (debugDataId && debugType === 'payment' && debugXSignature) {
-        const partes = Object.fromEntries(
-          debugXSignature.split(',').map((parte) => {
-            const [clave, valor] = parte.split('=');
-            return [clave?.trim(), valor?.trim()];
-          })
-        );
-        const ts = partes.ts;
-        const v1 = partes.v1;
-        const manifest = `id:${debugDataId};request-id:${debugXRequestId};ts:${ts};`;
-        const hmac = crypto
-          .createHmac('sha256', process.env.MP_WEBHOOK_SECRET)
-          .update(manifest)
-          .digest('hex');
-
-        console.log('WEBHOOK_DEBUG_HMAC', {
-          manifest,
-          v1,
-          hmac,
-          coincide: hmac === v1,
-        });
-      }
-    }
-
     // El data.id que Mercado Pago firma es el de la query string, no el del body.
     const dataId = request.nextUrl.searchParams.get('data.id');
 
