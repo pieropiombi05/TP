@@ -17,6 +17,7 @@
   text-align: center;
   margin-bottom: 0.75rem;
   animation: fadeIn 1s ease-out;
+  text-wrap: balance;
 }
 
 .productsTitle::before {
@@ -220,6 +221,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.1rem;
   color: var(--text-secondary);
+  max-width: 62ch;
+  margin: 0 auto;
+  text-wrap: pretty;
 }
 
 .errorMessage p {
@@ -233,6 +237,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   color: var(--text-secondary);
+  max-width: 62ch;
+  margin: 0 auto;
+  text-wrap: pretty;
 }
 
 /* ========================================
