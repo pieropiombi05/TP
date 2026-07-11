@@ -4,6 +4,7 @@
 export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabaseClient, obtenerAccessToken, marcarIndicioSesion, limpiarIndicioSesion } from '../../lib/supabase';
@@ -352,7 +353,13 @@ export default function AdminPage() {
                     <td style={styles.td}>{Number(producto.stock || 0)}</td>
                     <td style={styles.td}>
                       {producto.imagen ? (
-                        <img src={producto.imagen} alt={producto.nombre} style={styles.image} />
+                        <Image
+                          src={producto.imagen}
+                          alt={producto.nombre}
+                          width={48}
+                          height={48}
+                          style={styles.image}
+                        />
                       ) : (
                         'Sin imagen'
                       )}
